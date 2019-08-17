@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es2019",
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./",
+    "paths": {
+      "core/*": ["./src/core"],
+      "geometry/*": ["./src/geometry"],
+      "shapes/*": ["./src/shapes"],
+      "utils/*": ["./src/utils"],
+    }
+  },
+  "exclude": ["node_modules", "dist"]
+}

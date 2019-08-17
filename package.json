@@ -1,0 +1,36 @@
+{
+  "name": "@oneislandearth/mesh",
+  "private": false,
+  "version": "0.0.1",
+  "description": "A simple library for creating and working with 3D meshes in Javascript",
+  "main": "dist/index.js",
+  "scripts": {
+    "prepublish": "babel src -d dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oneislandearth/mesh.git"
+  },
+  "keywords": [
+    "mesh",
+    "csg",
+    "math",
+    "cad",
+    "oneisland"
+  ],
+  "author": "OneIsland Limited <team@oneisland.io>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/oneislandearth/mesh/issues"
+  },
+  "homepage": "https://github.com/oneislandearth/mesh#readme",
+  "dependencies": {
+    "mathjs": "^6.0.4"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "babel-plugin-module-resolver": "^3.2.0"
+  }
+}
