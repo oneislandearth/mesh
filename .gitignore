@@ -1,12 +1,11 @@
+# Symlinked .eslintrc.js
+.eslintrc*
+
 # MacOS files
 .DS_Store
 
-# Nodejs directories and files
-package-lock.json
+# Node directories
 node_modules
-
-# Production code
-/dist
 
 # Local env files
 .env.local

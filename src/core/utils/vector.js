@@ -1,11 +1,11 @@
-// Import the required modules from mathjs
-import { norm } from 'mathjs';
+// Import the required functions from math
+import { norm } from 'utils/math';
 
 // Define a class vertex which is an array of 3D coodinates
 export class Vertex extends Array {
 
   // Bind the x, y and z coordinates
-  constructor([ x, y, z ]) {
+  constructor([x, y, z]) {
 
     // Call the super function to bind our coodinates to the array
     super(x, y, z);

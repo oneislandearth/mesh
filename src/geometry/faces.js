@@ -1,5 +1,5 @@
 // Import the required modules from mathjs
-import { divide, add } from 'mathjs';
+import { divide, add } from 'utils/math';
 
 // Import the required utilities
 import { MetricNumber } from 'utils/number';
@@ -13,38 +13,31 @@ import { Face } from 'geometry/face';
 // Define a class for a group of Face classes
 export class Faces extends Array {
 
-  // Define the conscructor
-  constructor({ faces, mapped }) {
+  // Define the constructor
+  constructor({ faces }) {
+
+    // Map each face to a Face
+    faces = faces.map(([a, b, c]) => {
+
+      // Determine as to whether vertices or indices
+      const key = ((Array.isArray(a)) ? 'vertices' : 'indices');
+     
+      // Return the face
+      return new Face({ [key]: [a, b, c] });
+    });
 
     // Bind the array of faces to the class
     super(...faces);
-
-    // Determine whether the faces are mapped to vertices or are indices
-    this.mapped = Boolean(mapped);
-  }
-
-  // Create an array of Face from an array of face indices
-  static fromIndicesArray(faces) {
-
-    // Map each face to a Face
-    return new Faces({ 
-      faces: faces.map(face => new Face({ indices: face })) 
-    });
-  }
-
-  // Create an array of Face from an array of face vertices
-  static fromVerticesArray(faces) {
-
-    // Map each face to a Face
-    return new Faces({
-      faces: faces.map(face => new Face({ vertices: face })),
-      mapped: false
-    });
   }
 
   // Define the species to be an array
   static get [Symbol.species]() {
     return Array; 
+  }
+
+  // Determine whether the faces are mapped to vertices or are indices
+  get mapped() {
+    return this[0].mapped;
   }
 
   // Get each face from the list of faces
@@ -78,23 +71,6 @@ export class Faces extends Array {
 
     // Return as a metric number with units
     return new MetricNumber(value);
-  }
-
-  // Map the vertices for all the faces
-  mapVertices(vertices) {
-
-    // Iterate through each of the faces
-    for (const face of this.faces) {
-
-      // Define the vertices
-      face.mapVertices([vertices[face.a], vertices[face.b], vertices[face.c]]);
-    }
-
-    // Update the mapped flag
-    this.mapped = true;
-
-    // Return the instance
-    return this;
   }
 
 }

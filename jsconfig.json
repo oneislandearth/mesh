@@ -2,12 +2,13 @@
   "compilerOptions": {
     "target": "es2019",
     "allowSyntheticDefaultImports": true,
-    "baseUrl": "./",
+    "baseUrl": "./src/",
     "paths": {
-      "core/*": ["./src/core"],
-      "geometry/*": ["./src/geometry"],
-      "shapes/*": ["./src/shapes"],
-      "utils/*": ["./src/utils"],
+      "core/*": ["./core"],
+      "core-utils/*": ["./core/utils"],
+      "geometry/*": ["./geometry"],
+      "shapes/*": ["./shapes"],
+      "utils/*": ["./utils"]
     }
   },
   "exclude": ["node_modules", "dist"]

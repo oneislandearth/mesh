@@ -10,4 +10,4 @@ export {
   Vector,
   Face,
   Faces
-}
+};

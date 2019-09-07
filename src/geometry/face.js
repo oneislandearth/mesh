@@ -1,5 +1,5 @@
 // Import the required modules from mathjs
-import { divide, add, subtract, norm, cross } from 'mathjs';
+import { divide, add, subtract, norm, cross } from 'utils/math';
 
 // Import the required utilities
 import { MetricNumber } from 'utils/number';

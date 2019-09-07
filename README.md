@@ -4,7 +4,7 @@ A simple library for creating and working with 3D meshes in Javascript
 
 ## Documentation
 
-[Check out the latest documentation](https://github.com/oneislandearth/mesh/docs)
+[Check out the latest documentation](https://github.com/oneislandearth/mesh/tree/master/docs)
 
 ## License
 
