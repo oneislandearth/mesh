@@ -1,10 +1,14 @@
 // Import the required math functions
 import { add, multiply, cross, subtract, divide, dot } from 'utils/math';
 
-// Import the required core modules
-import { Edge } from 'geometry/edge';
-import { Direction } from 'core/utils/direction';
-import { Point } from 'core/utils/point';
+// Import the required geometry modules
+import { Point } from 'geometry/point';
+
+// Import the required geometry utilities
+import { Direction } from 'geometry/utils/direction';
+
+// Import the required shape modules
+import { Edge } from 'shape/edge';
 
 // Create a line from a Point and Direction
 export class Line {
@@ -21,6 +25,8 @@ export class Line {
 
   // Create a new Point from a line distance
   pointFromDistance(distance) {
+
+    
 
     // Return a new Point along the line
     return new Point(add(this.point, multiply(distance, this.direction)));
@@ -47,7 +53,7 @@ export class Line {
   intersectionPointWith(line) {
 
     // Throw an error if line is not a Line
-    if (!(line instanceof Line)) throw new TypeError('Line.intersectionPointWith expects an Line to be passed');
+    if (!(line instanceof Line)) throw new TypeError('Line.intersectionPointWith expects "line" to be a Line');
 
     // Return if there is no intersection between the two lines
     if (cross(line.direction, subtract(this.point, line.point)) || cross(line.direction, this.direction)) return;    

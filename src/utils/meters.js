@@ -1,5 +1,5 @@
-// Define a class for returning numbers with units
-export class MetricNumber extends Number {
+// Define a class for returning numbers as meters with units
+export class Meters extends Number {
 
   // Pass the number to Number
   constructor(number) {

@@ -2,13 +2,27 @@
 import { norm } from 'utils/math';
 
 // Define a class vertex which is an array of 3D coodinates
-export class Vertex extends Array {
+export class Vector extends Array {
 
   // Bind the x, y and z coordinates
   constructor([x, y, z]) {
 
     // Call the super function to bind our coodinates to the array
     super(x, y, z);
+  }
+
+  // Define a zeroes helper function
+  static zeroes() {
+
+    // Return a Vector with 0, 0, 0
+    return new Vector([1, 1, 1]);
+  }
+
+  // Define a ones helper function
+  static ones() {
+
+    // Return a Vector with 1, 1, 1
+    return new Vector([1, 1, 1]);
   }
 
   // Define the species to be an array

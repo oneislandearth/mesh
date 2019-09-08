@@ -1,9 +1,9 @@
 // Import all of the core utilities from the package
-import { Vector } from 'core/utils/vector';
+import { Vector } from 'geometry/vector';
 
 // Import all of the geometric components from the package
-import { Face } from 'geometry/face';
-import { Faces } from 'geometry/faces';
+import { Face } from 'shape/face';
+import { Faces } from 'mesh/faces';
 
 // Export all the functionality
 export {

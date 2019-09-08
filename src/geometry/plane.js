@@ -1,11 +1,16 @@
+// Import the required functions from math
 import { unit, cross, dot, minus, add, multiply, divide, subtract } from 'utils/math';
-import { Line } from '^/core/utils/line';
+
+// Import the geometry modules
+import { Line } from 'geometry/line';
 
 // Define the tolerance used for splitting planes
 const PlaneTolerance = 1e-4;
 
+// 
 export class Plane {
 
+  // Create a new Plane from a scalar and normal
   constructor({ normal, scalar }) {
 
     // Bind the normal and scalar
@@ -16,7 +21,7 @@ export class Plane {
   static fromFace([a, b, c]) {
 
     // Calculate the normal of the plane
-    const normal = unit(cross(minus(b, a), minus(c, a)));
+    const normal = new Vector(unit(cross(minus(b, a), minus(c, a))));
 
     // Calculate the scalar of the plane
     const scalar = dot(normal, a);
@@ -36,7 +41,7 @@ export class Plane {
   lineOfIntersectionWith(plane) {
 
     // Throw an error if plane is not a plane
-    if (!(plane instanceof Plane)) throw new TypeError('Plane.intersectionLineWith expects a Plane to be passed');
+    if (!(plane instanceof Plane)) throw new TypeError('Plane.intersectionLineWith expects "plane" to be a Plane');
 
     // Extract the normal and scalar values from the planes
     const [n1, s1] = [this.normal, this.scalar];

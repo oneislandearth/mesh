@@ -1,17 +1,14 @@
 // Import the required modules from mathjs
-import { divide, add, subtract, norm, cross } from 'utils/math';
+import { divide, add, subtract, norm, cross, toMeters } from 'utils/math';
 
-// Import the required utilities
-import { MetricNumber } from 'utils/number';
-
-// Import the required core modules
-import { Vector } from 'core/utils/vector';
+// Import the required geometry modules
+import { Vector } from 'geometry/vector';
 
 // Define a class face which is an array of three vertices plus extra properties
 export class Face extends Array {
 
   // Bind the vertices or indices
-  constructor({ indices, vertices }) {
+  constructor({ mesh, indices, vertices }) {
 
     // Determine whether to use indices or vertices
     const [a, b, c] = (vertices) ? vertices : indices;
@@ -85,8 +82,11 @@ export class Face extends Array {
     if (!this.mapped) throw new Error(`Cannot compute the face area - the face is not mapped to vertices`);
   
     // Calculate the area of a triangle = norm(cross product(a-b, a-c))
-    return new MetricNumber(norm(cross(subtract(this.a, this.b), subtract(this.a, this.c))));
+    return toMeters(norm(cross(subtract(this.a, this.b), subtract(this.a, this.c))));
   }
+
+  // Get the edges from the face
+
 
   // Map the face to the values in vertices
   mapVertices([a, b, c]) {

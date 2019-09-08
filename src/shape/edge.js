@@ -1,12 +1,11 @@
-// Import the required modules from mathjs
-import { distance, subtract, divide, cross, add, dot, multiply, unit } from 'utils/math';
+// Import the required math functions
+import { distance, subtract, divide, cross, add, dot, multiply, unit, toMeters } from 'utils/math';
 
-// Import the required utilities
-import { MetricNumber } from 'utils/number';
+// Import the geometry utilities
+import { Direction } from 'geometry/utils/direction';
 
-// Import the required core modules
-import { Direction } from 'core/utils/direction';
-import { Vertex } from 'src/core/utils/vector';
+// Import the required shape modules
+import { Vertex } from 'shape/vertex';
 
 // Define a class edge which is an array of three vertices plus extra properties
 export class Edge extends Array {
@@ -55,7 +54,7 @@ export class Edge extends Array {
     if (!this.mapped) throw new Error(`Cannot compute the edge length - the edge is not mapped to vertices`);
 
     // Calculate the length of the edge
-    return new MetricNumber(distance(this.a, this.b));
+    return toMeters(distance(this.a, this.b));
   }
 
   // Get the direction of an edge

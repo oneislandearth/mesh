@@ -12,11 +12,13 @@
   ],
   "main": "lib/index.js",
   "scripts": {
+    "test": "oneisland-babler lib && ava",
     "prepublishOnly": "oneisland-babler lib"
   },
   "dependencies": {
     "@oneisland/babler": "0.0.4",
     "@oneisland/linter": "0.0.5",
+    "ava": "^2.3.0",
     "mathjs": "^6.2.1"
   },
   "homepage": "https://github.com/oneislandearth/mesh#readme",

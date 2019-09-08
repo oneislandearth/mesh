@@ -1,8 +1,40 @@
-// Import the core math functions to use
-import { default as math } from 'mathjs';
+// Import the mathjs configuration options
+import { create, all } from 'mathjs';
 
-// Add a unit function to math
+// Import the meters class
+import { Meters } from 'utils/meters';
+
+// Congifure mathjs units (waiting for V7)
+// const math = create(all, {
+//   number: 'BigNumber'
+// });
+
+// Configue mathjs
+const math = create(all, {});
+
+// Phi ratio / Golden ratio
+math.phi = math.divide(math.add(1, math.sqrt(5)), 2);
+
+// Number of degrees in one radian
+math.degree = math.divide(180, math.pi);
+
+// Calculate a value in degrees
+math.degrees = (n) => math.multiply(n, math.degree);
+
+// Number of radians in one degree
+math.radian = math.divide(math.pi, 180);
+
+// Calculate a value in radians
+math.radians = (n) => math.multiply(n, math.radian);
+
+// Calculate the unit vector of a vector
 math.unit = (n) => math.divide(n, math.norm(n));
 
-// Export math as a function
-export default math;
+// Check that a value a kind of number
+math.isNumber = (n) => (typeof n == 'number' || n instanceof math.BigNumber);
+
+// Cast a number to Meters
+math.toMeters = (n) => new Meters(n);
+
+// Export all math the functions (must use module.exports to prevent babel casting to default)
+module.exports = math;

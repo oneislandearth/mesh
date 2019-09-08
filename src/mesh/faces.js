@@ -1,14 +1,11 @@
-// Import the required modules from mathjs
-import { divide, add } from 'utils/math';
+// Import the required math functions
+import { divide, add, toMeters } from 'utils/math';
 
-// Import the required utilities
-import { MetricNumber } from 'utils/number';
+// Import the required geometry modules
+import { Vector } from 'geometry/vector';
 
-// Import the required core modules
-import { Vector } from 'core/utils/vector';
-
-// Import the required geometric modules
-import { Face } from 'geometry/face';
+// Import the required shape modules
+import { Face } from 'shape/face';
 
 // Define a class for a group of Face classes
 export class Faces extends Array {
@@ -28,6 +25,12 @@ export class Faces extends Array {
 
     // Bind the array of faces to the class
     super(...faces);
+  }
+
+  // Create the faces from a mesh
+  static fromMesh({ mesh }) {
+
+
   }
 
   // Define the species to be an array
@@ -69,8 +72,8 @@ export class Faces extends Array {
     // Calculate the sum of face area
     const value = this.faces.reduce((sum, { area }) => add(sum, area), 0);
 
-    // Return as a metric number with units
-    return new MetricNumber(value);
+    // Return as a unit in meters
+    return toMeters(value);
   }
 
 }
