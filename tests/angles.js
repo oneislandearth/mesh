@@ -44,9 +44,35 @@ test('Angles: eval function (radians)', (result) => {
 });
 
 
-// Angles from eval (error
+// Angles from eval (error)
 test('Angles: eval function (error)', (result) => {
   
   // Throw an error for non-numeric values
   result.throws(() => Angle.eval('nothingNumberic'), 'Angle.eval expects "string" to contain digits within in the string');
+});
+
+// Angles addition
+test('Angles: modification', (result) => {
+
+  // Create an angle of 1 radian
+  let angle = new Angle(1);
+
+  // Check that the value casts to a number correctly
+  result.assert(angle == 1);
+  result.is(angle.radians, 1);
+
+  // Minus one radian from the angle
+  angle.radians -= 1;
+
+  // Check that math works correctly with radians
+  result.assert(angle == 0);
+  result.is(angle.radians, 0);
+
+  // Add 180 degrees to the angle
+  angle.degrees += 180;
+
+  // Check that math works correctly with degrees
+  result.assert(angle == Math.PI);
+  result.is(angle.radians, Math.PI);
+  result.is(angle.degrees, 180);
 });
