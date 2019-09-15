@@ -1,5 +1,18 @@
-// Import the require modules
+// Import the required math functions
+import { cos, divide, sin, multiply, subtract, add, dot, cross } from 'utils/math';
+
+// Import the require geometry modules
 import { Vector } from 'geometry/vector';
+
+// Import the required geometry utilities
+import { Angle } from 'geometry/utils/angle';
+import { Direction } from 'geometry/utils/direction';
+
+// Import the required utilities
+import { Validator } from 'utils/validator';
+
+// Define a validator for the class
+const { validate } = new Validator('Quaternion');
 
 // Calculate a Quaternion from a scalar and vector
 export class Quaternion extends Array {
@@ -8,57 +21,36 @@ export class Quaternion extends Array {
   constructor({ scalar, vector }) {
 
     // Throw an error if the scalar is not a Number
-    if (typeof scalar != 'number') throw new TypeError('new Quaternion() expects "scalar" to be a Number');
+    validate({ scalar, Number });
 
     // Throw an error if the vector is not a Vector
-    if (!(vector instanceof Vector)) throw new TypeError('new Quaternion() expects "vector" to be a Vector');
+    validate({ vector, Vector });
 
     // Call the super function to bind our coodinates to the array
     super(scalar, ...vector);
   }
 
-  // Create a new Quaterion from a Vertex
-  static fromVertex({ vertex }) {
+  // Create a new Quaternion from a Vector
+  static fromVector({ vector }) {
 
-    // Throw an error if the vertex is not a Vertex
-    if (!(vertex instanceof Vertex)) throw new TypeError('Quaternion.fromVertex expects "vertex" to be a Vertex');
-
-    // Return the new Quaternion
-    return new Quaternion({ 
-
-      // Add the scalar value
-      scalar: 0, 
-
-      // Cast the Vertex to a Vector
-      vector: vertex.toVector()
-    });
-  }
-
-  // Create a new Quaternion from a Point
-  static fromPoint({ point }) {
-
-    // Throw an error if the point is not a Point
-    if (!(point instanceof Point)) throw new TypeError('Quaternion.fromPoint expects "point" to be a Point');
+    // Throw an error if the vector is not a Vector
+    validate({ vector, Vector });
 
     // Return the new Quaternion
-    return new Quaternion({ 
-
-      // Add the scalar value
-      scalar: 0, 
-
-      // Cast the Point to a Vector
-      vector: point.toVector()
-    });
+    return new Quaternion({ scalar: 0, vector });
   }
 
   // Create a new Quaternion from a rotaton (angle and axis)
-  static fromRotation({ rotation }) {
+  static fromAngleAndDirection({ angle, direction }) {
 
-    // Throw an error if the rotation is not a Rotation
-    if (!(angle instanceof Angle)) throw new TypeError('Quaternion.fromRotation expects "rotation" to be a Rotation');
+    // Throw an error if the angle is not an Angle
+    validate({ angle, Angle });
 
-    // Extract the angle and x, y, z values
-    const { angle, axis } = rotation;
+    // Throw an error if the direction is not a Direction
+    validate({ direction, Direction });
+
+    // Extract the x, y and z values from the direction
+    const [x, y, z] = direction;
 
     // Return the Quaternion
     return new Quaternion({ 
@@ -70,13 +62,13 @@ export class Quaternion extends Array {
       vector: new Vector([
 
         // Calculate the x value
-        multiply(sin(divide(angle, 2)), axis.x),
+        multiply(sin(divide(angle, 2)), x),
 
         // Calculate the y value
-        multiply(sin(divide(angle, 2)), axis.y),
+        multiply(sin(divide(angle, 2)), y),
 
         // Calculate the z value
-        multiply(sin(divide(angle, 2)), axis.z)
+        multiply(sin(divide(angle, 2)), z)
       ])
     });
 

@@ -1,13 +1,28 @@
-// Import the required functions from math
+// Import the required math functions
 import { norm } from 'utils/math';
+
+// Import the required utilities
+import { Validator } from 'utils/validator';
+
+// Define a validator for the class
+const { validate } = new Validator('Vector');
 
 // Define a class vertex which is an array of 3D coodinates
 export class Vector extends Array {
 
-  // Bind the x, y and z coordinates
+  // Create a Vector from the x, y and z
   constructor([x, y, z]) {
 
-    // Call the super function to bind our coodinates to the array
+    // Throw an error if the x value is not a Number
+    validate({ x, Number });
+
+    // Throw an error if the y value is not a Number
+    validate({ y, Number });
+    
+    // Throw an error if the z value is not a Number
+    validate({ z, Number });
+
+    // Call the super function to bind x, y, and z to the array
     super(x, y, z);
   }
 
@@ -30,39 +45,53 @@ export class Vector extends Array {
     return Array; 
   }
 
-  // Get the value of the 'x' coordinate
+  // Determine the x value of the vector
   get x() {
     return this[0];
   }
 
-  // Set the value of the 'x' coordinate
+  // Update the x value of the vector
   set x(x) {
     this[0] = x;
   }
 
-  // Get the value of the 'y' coordinate
+  // Determine the y value of the vector
   get y() {
     return this[1];
   }
 
-  // Set the value of the 'y' coordinate
+  // Update the y value of the vector
   set y(y) {
     this[1] = y;
   }
 
-  // Get the value of the 'z' coordinate
+  // Determine the z value of the vector
   get z() {
     return this[2];
   }
 
-  // Set the value of the 'z' coordinate
+  // Update the z value of the vector
   set z(z) {
     this[2] = z;
   }
 
-  // Get the euclidean norm of the vector
+  // Determine the euclidean norm of the vector
   get magnitude() {
     return norm(this);
+  }
+
+  // Cast the vector to a string
+  toString() {
+    
+    // Return the stringified vector
+    return JSON.stringify(this);
+  }
+  
+  // Evaluate if two vectors are the same
+  equals(vector) {
+  
+    // Check that the vectors equal the same value
+    return (this.toString() === vector.toString());
   }
 
 }

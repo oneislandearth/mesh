@@ -31,7 +31,7 @@ math.radians = (n) => math.multiply(n, math.radian);
 math.unit = (n) => math.divide(n, math.norm(n));
 
 // Check that a value a kind of number
-math.isNumber = (n) => (typeof n == 'number' || n instanceof math.BigNumber);
+math.isNumber = (n) => (n !== null && (typeof n == 'number' || n instanceof math.BigNumber));
 
 // Cast a number to Meters
 math.toMeters = (n) => new Meters(n);

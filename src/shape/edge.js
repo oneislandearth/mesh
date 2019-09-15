@@ -1,20 +1,45 @@
 // Import the required math functions
-import { distance, subtract, divide, cross, add, dot, multiply, unit, toMeters } from 'utils/math';
+import { distance, subtract, multiply, toMeters } from 'utils/math';
 
-// Import the geometry utilities
+// Import the required geometry modules
+import { Line } from 'geometry/line';
+import { Point } from 'geometry/point';
+
+// Import the required geometry utilities
 import { Direction } from 'geometry/utils/direction';
 
 // Import the required shape modules
 import { Vertex } from 'shape/vertex';
 
+// Import the core mesh module
+import { Mesh } from 'shapes/mesh';
+
+// Import the required utilities
+import { Validator } from 'utils/validator';
+
+// Define a validator for the class
+const { validate } = new Validator('Edge');
+
 // Define a class edge which is an array of three vertices plus extra properties
 export class Edge extends Array {
 
-  // Bind the vertices or indices for an edge
-  constructor([a, b]) {
+  // Bind the indices of an edge with reference to the mesh
+  constructor([a, b], mesh = null) {
 
-    // Call the super function to bind our two vertices or indices
+    // Throw an error if a is not a Number
+    validate({ a, Number });
+
+    // Throw an error if b is not a Number
+    validate({ b, Number });
+
+    // Throw an error if the mesh in not a Mesh
+    if (mesh) validate({ mesh, Mesh });
+
+    // Call the super function to bind the indices
     super(a, b);
+
+    // Bind the reference to the current mesh if there is one
+    this.mesh = mesh;
   }
 
   // Define the species to be an array
@@ -22,36 +47,34 @@ export class Edge extends Array {
     return Array; 
   }
 
-  // Determine whether the edge is mapped (vertices) or not (indices)
-  get mapped() {
-    return (Array.isArray(this.a) && Array.isArray(this.b));
-  }
-
-  // Get the value of vertex a
+  // Compute the value of vertex a
   get a() {
-    return this[0];
+    return this.vertices[0];
   }
 
-  // Set the value of vertex a
-  set a(a) {
-    this[0] = a;
-  }
-
-  // Get the value of vertex b
+  // Compute the value of vertex b
   get b() {
-    return this[1];
+    return this.vertices[1];
   }
 
-  // Set the value of vertex b
-  set b(b) {
-    this[1] = b;
+  // Find the vertices for the vertex based on the indices
+  get vertices() {
+
+    // Check if the edge is bound to a mesh and if not throw an error
+    if (!this.mesh) throw new Error(`Cannot compute the vertices - the edge is not bound to a Mesh`);
+
+    // Return the vertices based on the indices
+    return [
+      this.mesh.vertices[this[0]], 
+      this.mesh.vertices[this[1]]
+    ];  
   }
 
-  // Get the length of an edge
+  // Comput the length of an edge
   get length() {
 
-    // Check if the edge is mapped
-    if (!this.mapped) throw new Error(`Cannot compute the edge length - the edge is not mapped to vertices`);
+    // Check if the edge is bound to a mesh and if not throw an error
+    if (!this.mesh) throw new Error(`Cannot compute the length of the edge - the edge is not bound to a Mesh`);
 
     // Calculate the length of the edge
     return toMeters(distance(this.a, this.b));
@@ -60,49 +83,64 @@ export class Edge extends Array {
   // Get the direction of an edge
   get direction() {
 
-    // Check if the edge is mapped
-    if (!this.mapped) throw new Error(`Cannot compute the edge direction - the edge is not mapped to vertices`);
+    // Check if the edge is bound to a mesh and if not throw an error
+    if (!this.mesh) throw new Error(`Cannot compute the direction of the edge - the edge is not bound to a Mesh`);
 
     // Calculate the direction of the edge
-    return new Direction(unit(subtract(this.b, this.a)));
+    return new Direction(subtract(this.b, this.a));
   }
 
-  // Find a point along the edge
+  // Find a Point along the Edge
   lerp(fraction) {
 
-    // Check if the edge is mapped
-    if (!this.mapped) throw new Error(`Cannot compute the vector using lerp - the edge is not mapped to vertices`);
+    // Check if the edge is bound to a mesh and if not throw an error
+    if (!this.mesh) throw new Error(`Cannot compute linear interpolation of the edge - the edge is not bound to a Mesh`);
   
-    // Calculate and return the new vertex
-    return new Vertex(multiply(fraction, subtract(this.b, this.a)));
+    // Return the Point alone the Edge
+    return new Point(multiply(fraction, subtract(this.b, this.a)));
   }
 
-  // Calculate the intersection with another edge
-  intersectionWith(edge) {
+  // Cast an Edge to a Line
+  toLine() {
 
-    // Throw an error if edge is not an edge
-    if (!(edge instanceof Edge)) throw new TypeError('Edge.intersectionWith expects an Edge to be passed');
-
-    // Vector of distance to the intersection
-    const distance = multiply(divide(cross(edge.direction, subtract(this.a, edge.a)), cross(edge.direction, this.direction)), this.direction);
-
-    // Check whether the point is in front or behind the the edge's a point 
-    const front = (dot(cross(edge.direction, subtract(edge.direction, edge.a)), cross(edge.direction, this.direction)) > 0);
-
-    // Calculate the point of intersection based on whether the point is in front or not
-    const intersection = (front) ? add(this.a, distance) : subtract(this.a, distance);
-
-    // Return the point of intersection
-    return new Vertex(intersection);
+    // Return the new Line from the Edge
+    return new Line({ 
+      
+      // Add the point
+      point: new Point(this.a), 
+      
+      // Add the direction
+      direction: new Direction(subtract(this.b, this.a))
+    });  
   }
 
-  // Map the edge to the values in vertices
-  mapVertices([a, b]) {
+  // Cast the edge to a string
+  toString() {
     
-    // Set the value of the edge vertices
-    [this.a, this.b] = [a, b];
+    // Return the stringified edge
+    return JSON.stringify(this);
+  }
 
-    // Return the edge
-    return this;
+  // Evaluate if two edges are the same
+  equals(edge) {
+
+    // Throw an error if face is not a Face
+    validate({ edge, Edge });
+
+    // Check that the edges equal the same value
+    return (this.toString() === edge.toString());
+  }
+
+  // Evaluate if the edge contains a vertex
+  contains(vertex) {
+
+    // Throw an error if vertex is not a Vertex
+    validate({ vertex, Vertex });
+
+    // Find the vertex within the edge
+    const match = this.vertices.filter(v => v.toString() == vertex.toString());
+
+    // Return true if the vertex is in the edge
+    return Boolean(match);
   }
 }

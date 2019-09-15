@@ -1,8 +1,14 @@
-// Import the math functions
+// Import the required math functions
 import { unit } from 'utils/math';
 
 // Import the Vector class
 import { Vector } from 'geometry/vector';
+
+// Import the required utilities
+import { Validator } from 'utils/validator';
+
+// Define a validator for the class
+const { validate } = new Validator('Direction');
 
 // Define a class Direction which defines a vector within a vector field
 export class Direction extends Vector {
@@ -10,11 +16,20 @@ export class Direction extends Vector {
   // Bind the x, y and z coordinates
   constructor([x, y, z]) {
 
+    // Throw an error if the x value is not a Number
+    validate({ x, Number });
+
+    // Throw an error if the y value is not a Number
+    validate({ y, Number });
+    
+    // Throw an error if the z value is not a Number
+    validate({ z, Number });
+
     // Apply the unitizing function
     [x, y, z] = unit([x, y, z]);
 
     // Call the super function to bind our coodinates to the array
-    super(x, y, z);
+    super([x, y, z]);
   }
 
   // Create a new Direction pointing towards the center

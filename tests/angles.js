@@ -1,17 +1,23 @@
 // Import the testing module
 import test from 'ava';
 
+// Import the required math functions
+import { pi } from 'lib/utils/math';
+
 // Import the Angle class
 import { Angle } from 'lib/geometry/utils/angle';
+
+// Create a variable holder for the angle
+let angle;
 
 // Values match expected
 test('Angles: values match', (result) => {
 
   // Create the angle
-  const angle = new Angle(Math.PI);
+  angle = new Angle(pi);
 
   // Check the angle in radians
-  result.is(angle.radians.toFixed(3), Math.PI.toFixed(3));
+  result.is(angle.radians, pi);
 
   // Check the angle in degrees
   result.is(angle.degrees, 180);
@@ -55,7 +61,7 @@ test('Angles: eval function (error)', (result) => {
 test('Angles: modification', (result) => {
 
   // Create an angle of 1 radian
-  let angle = new Angle(1);
+  angle = new Angle(1);
 
   // Check that the value casts to a number correctly
   result.assert(angle == 1);
@@ -72,7 +78,7 @@ test('Angles: modification', (result) => {
   angle.degrees += 180;
 
   // Check that math works correctly with degrees
-  result.assert(angle == Math.PI);
-  result.is(angle.radians, Math.PI);
+  result.assert(angle == pi);
+  result.is(angle.radians, pi);
   result.is(angle.degrees, 180);
 });
