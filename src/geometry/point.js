@@ -1,8 +1,9 @@
 // Import the required math functions
-import { acos, divide, dot, multiply, norm } from 'utils/math';
+import { acos, divide, dot, multiply, norm, subtract } from 'utils/math';
 
 // Import the required geometry modules
 import { Vector } from 'geometry/vector';
+import { Plane } from 'geometry/plane';
 
 // Import the required geometry utiliites
 import { Angle } from 'geometry/utils/angle';
@@ -71,10 +72,26 @@ export class Point extends Vector {
     validate({ point, Point });
 
     // Calculate the angle between the points
-    const angle = acos(divide(dot(this, point), multiply(norm(this), norm(point))));
+    const angle = acos(divide(dot([this.x, this.y, this.z], point), multiply(norm([this.x, this.y, this.z]), norm(point))));
 
     // Return the angle betwen the points
     return new Angle(angle);
+  }
+
+  // Project a point onto a given plane
+  projectToPlane(plane) {
+
+    // Throw an error if plane is not a Plane
+    validate({ plane, Plane });
+
+    // Find the distance the between the point and the plane
+    const distance = dot(plane.normal, [this.x, this.y, this.z]);
+
+    // Calculate the projected point
+    const projected = subtract([this.x, this.y, this.z], multiply(distance, plane.normal));
+
+    // Return the projected Point
+    return new Point(projected);
   }
 
   // Cast the point to a Vector

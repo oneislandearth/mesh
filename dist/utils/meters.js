@@ -1,1 +1,0 @@
-"use strict";exports.__esModule=true;exports.Meters=void 0;class Meters extends Number{constructor(number){super(number)}static get(){return this}toString(){return`${this.toFixed(3)} meters`}}exports.Meters=Meters;

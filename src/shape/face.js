@@ -1,17 +1,19 @@
 // Import the required math functions
-import { divide, add, subtract, norm, cross, unit, minus, dot, toMeters } from 'utils/math';
+import { divide, add, subtract, norm, cross, minus, dot, toMeters } from 'utils/math';
 
 // Import the required geometry modules
 import { Plane } from 'geometry/plane';
 import { Point } from 'geometry/point';
-import { Vector } from 'geometry/vector';
+
+// Import the required geometry utilities
+import { Direction } from 'geometry/utils/direction';
 
 // Import the required shape modules
 import { Edge } from 'shape/edge';
 import { Vertex } from 'shape/vertex';
 
 // Import the core mesh module
-import { Mesh } from 'shapes/mesh';
+import { Mesh } from 'mesh/mesh';
 
 // Import the required utilities
 import { Validator } from 'utils/validator';
@@ -85,7 +87,7 @@ export class Face extends Array {
     if (!this.mesh) throw new Error(`Cannot compute the face plane - the face is not bound to a Mesh`);
 
     // Calculate the normal of the Plane
-    const normal = new Vector(unit(cross(minus(this.b, this.a), minus(this.c, this.a))));
+    const normal = new Direction(cross(minus(this.b, this.a), minus(this.c, this.a)));
 
     // Calculate the scalar of the Plane
     const scalar = dot(normal, this.a);
@@ -102,7 +104,7 @@ export class Face extends Array {
 
     // Return the normal for the face
     return this.plane.normal;
-  }
+  }  
 
   // Find the edges from the face
   get edges() {
@@ -132,7 +134,7 @@ export class Face extends Array {
     if (!this.mesh) throw new Error(`Cannot compute the face area - the face is not bound to a Mesh`);
   
     // Calculate the area of a triangle = norm(cross product(a-b, a-c))
-    return toMeters(norm(cross(subtract(this.a, this.b), subtract(this.a, this.c))));
+    return toMeters(divide(norm(cross(subtract(this.a, this.b), subtract(this.a, this.c))), 2));
   }
 
   // Find the adjacent faces to the face
@@ -188,6 +190,51 @@ export class Face extends Array {
 
     // Return null as there is no adjacent edge
     return null;
+  }
+
+  // Reorder the indices in the face
+  reorder(order) {
+
+    // Define the validation function to check the face is valid
+    const equals = (order) => {
+
+      // Define a sum of indexes
+      let sum = 0;
+
+      // Define the valid options (0, 1, 2)
+      const valid = [0, 1, 2];
+
+      // Iterate through each of the points in the order
+      for (const value of order) {
+
+        // Add the value to the sum
+        sum += valid.indexOf(Number(value));
+      }
+      
+      // Return true if there is a 0, 1 and a 2
+      return (sum == 3);
+    };
+
+    // Throw an error if the order is not valid
+    validate({ order, equals, expects: '"order" to be a valid order of indices (0, 1, 2)' });
+
+    console.log(order);
+
+    // Change the order of the faces
+    this[0] = this[order[0]];
+    this[1] = this[order[1]];
+    this[2] = this[order[2]];
+  }
+
+  // Flip the current face
+  flip() {
+
+    // Switch the order from a, b, c to c, b, a
+    this[0] = this[2];
+    this[2] = this[0];
+
+    // Flip the plane
+    this.plane.flip();
   }
 
   // Cast the face to a string

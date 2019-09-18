@@ -4,7 +4,7 @@ import { cross, dot, add, multiply, divide, subtract } from 'utils/math';
 // Import the required geometry modules
 import { Line } from 'geometry/line';
 import { Point } from 'geometry/point';
-import { Vector } from 'geometry/vector';
+import { Polygon } from 'geometry/polygon';
 
 // Import the required geometry utilities
 import { Direction } from 'geometry/utils/direction';
@@ -15,17 +15,14 @@ import { Validator } from 'utils/validator';
 // Define a validator for the class
 const { validate } = new Validator('Plane');
 
-// Define the tolerance used for splitting planes
-const PlaneTolerance = 1e-4;
-
 // Define a plane
 export class Plane {
 
   // Create a new Plane from a scalar and normal
   constructor({ normal, scalar }) {
 
-    // Throw an error if the normal is not a Vector
-    validate({ normal, Vector });
+    // Throw an error if the normal is not a Direction
+    validate({ normal, Direction });
 
     // Throw an error if the scalar is not a Number
     validate({ scalar, Number });
@@ -33,6 +30,37 @@ export class Plane {
     // Bind the normal and scalar
     this.normal = normal;
     this.scalar = scalar;
+  }
+
+  // Define the tolerance used for splitting planes
+  static get tolerance() {
+
+    // Return the tolerance
+    return 1e-4;
+  }
+
+  // Create a plane from a polygon
+  static fromPolygon(polygon) {
+
+    // Throw an error if the polygon is not a Polygon
+    validate({ polygon, Polygon });
+
+    // Calculate the normal of the Plane
+    const normal = new Direction(cross(subtract(polygon[1], polygon[0]), subtract(polygon[2], polygon[0])));
+
+    // Calculate the scalar of the Plane
+    const scalar = dot(normal, polygon[0]);
+
+    // Return the Plane from the polygon
+    return new Plane({ normal, scalar });
+  }
+
+  // Flip the current plane
+  flip() {
+
+    // Flip the sign on the normal and scalar
+    this.normal = multiply(this.normal, -1);
+    this.scalar = multiply(this.scalar, -1);
   }
 
   // Scale the plane from a distance
@@ -43,6 +71,13 @@ export class Plane {
 
     // Scale the plane by a distance
     this.scalar = add(this.scalar, distance);
+  }
+
+  // Check if the plane contains a point
+  containsPoint(point) {
+
+    // Determine if the plane contains a point
+    return (subtract(this.scalar, dot(this.normal, point)) <= Plane.tolerance);
   }
 
   // Calculate the line of intersection with another plane

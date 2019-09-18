@@ -14,7 +14,7 @@ export class Validator {
     const validate = (options) => {
 
       // Extract the variable name and type name
-      const [variable, type] = Object.keys(options).filter(key => key != 'expects');
+      const [variable, type] = Object.keys(options).filter(key => (key != 'expects' && key != 'equals'));
 
       // Define the function name which called the validator
       let caller = '';
@@ -53,6 +53,13 @@ export class Validator {
         // Check that the value is set
         passed = (value !== null && value != false);
 
+        // If there is an equals function
+        if (options.equals && passed) {
+
+          // Check that the value passed the equals function
+          passed = options.equals(value);
+        }
+
       // Check if the type is number
       } else if (type.toLowerCase() == 'number') {
 
@@ -73,7 +80,7 @@ export class Validator {
       if (!passed) {
 
         // Determine the expected outcome
-        const expectation = (options.expects) ? options.expects : `"${variable}" to be a ${type}`; 
+        const expectation = (options.expects) ? options.expects : (options.equals) ? `"${variable}" a valid option` : `"${variable}" to be a ${type}`; 
 
         // Determine the error message
         const message = `${caller} expects ${expectation}`;

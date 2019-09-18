@@ -8,7 +8,7 @@ import { Direction } from 'geometry/utils/direction';
 import { Quaternion } from 'geometry/utils/quaternion';
 
 // Import the core mesh module
-import { Mesh } from 'shapes/mesh';
+import { Mesh } from 'mesh/mesh';
 
 // Import the required utilities
 import { Validator } from 'utils/validator';

@@ -5,10 +5,9 @@
     "baseUrl": "./src/",
     "paths": {
       "lib/*": ["../lib"],
-      "core/*": ["./core"],
       "geometry/*": ["./geometry"],
       "shape/*": ["./shape"],
-      "shapes/*": ["./shapes"],
+      "mesh/*": ["./mesh"],
       "utils/*": ["./utils"]
     }
   },

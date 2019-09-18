@@ -12,7 +12,7 @@ import { Direction } from 'geometry/utils/direction';
 import { Vertex } from 'shape/vertex';
 
 // Import the core mesh module
-import { Mesh } from 'shapes/mesh';
+import { Mesh } from 'mesh/mesh';
 
 // Import the required utilities
 import { Validator } from 'utils/validator';
@@ -33,7 +33,7 @@ export class Edge extends Array {
     validate({ b, Number });
 
     // Throw an error if the mesh in not a Mesh
-    if (mesh) validate({ mesh, Mesh });
+    validate({ mesh, Mesh });
 
     // Call the super function to bind the indices
     super(a, b);
@@ -104,14 +104,7 @@ export class Edge extends Array {
   toLine() {
 
     // Return the new Line from the Edge
-    return new Line({ 
-      
-      // Add the point
-      point: new Point(this.a), 
-      
-      // Add the direction
-      direction: new Direction(subtract(this.b, this.a))
-    });  
+    return Line.fromPoints([this.a.toPoint(), this.b.toPoint()]);
   }
 
   // Cast the edge to a string

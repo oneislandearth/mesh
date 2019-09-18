@@ -2,7 +2,8 @@
 import { add, multiply, cross, subtract, divide, dot } from 'utils/math';
 
 // Import the required geometry modules
-import { Point } from 'geometry/line';
+import { Point } from 'geometry/point';
+import { Plane } from 'geometry/plane';
 
 // Import the required geometry utiliites
 import { Direction } from 'geometry/utils/direction';
@@ -28,6 +29,26 @@ export class Line {
     // Bind the point and direction
     this.point = point;
     this.direction = direction;
+  }
+
+  // Create a new line from two points
+  static fromPoints([a, b]) {
+
+    // Throw an error if a is not a Point
+    validate({ a, Point });
+
+    // Throw an error if a is not a Point
+    validate({ b, Point });
+
+    // Return the new Line
+    return new Line({
+
+      // Add the point
+      point: a,
+
+      // Add the direction
+      direction: new Direction(subtract(b, a))
+    });
   }
 
   // Create a new Point from a line distance
@@ -60,8 +81,24 @@ export class Line {
     });
   }
 
-  // Calculate the intersection point with another line
-  pointOfIntersectionWith(line) {
+  // Calculate the point of intersection with a plane
+  pointOfIntersectionWithPlane(plane) {
+
+    // Throw an error if plane is not a Plane
+    validate({ plane, Plane });
+
+    // Return if there is no intersection between the line and plane
+    if (dot(plane.normal, this.direction)) return null;
+
+    // Calculate the distance along the line where the line intercepts the plane
+    const distance = divide(subtract(plane.scalar, dot(plane.normal, this.point)), dot(plane.normal, this.direction));
+
+    // Return the point of intersection
+    return this.pointFromDistance(distance);
+  }
+
+  // Calculate the point of intersection another line
+  pointOfIntersectionWithLine(line) {
 
     // Throw an error if line is not a Line
     validate({ line, Line });

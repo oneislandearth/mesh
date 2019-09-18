@@ -1,1 +1,0 @@
-"use strict";exports.__esModule=true;var _vector=require("./geometry/vector");var _mesh=require("./shapes/mesh");exports.Mesh=_mesh.Mesh;

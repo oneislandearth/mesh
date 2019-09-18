@@ -4,9 +4,9 @@ import { add, divide } from 'utils/math';
 // Import the required geometry modules
 import { Point } from 'geometry/point';
 
-// Import the required mesh modules
-import { Vertices } from 'shapes/vertices';
-import { Faces } from 'shapes/faces';
+// Import the required shape modules
+import { Vertices } from 'shape/vertices';
+import { Faces } from 'shape/faces';
 
 // Create a new mesh from vertices and faces (indices)
 export class Mesh {
