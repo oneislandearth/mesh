@@ -53,13 +53,13 @@ export class Angle {
     return Angle.eval('90 deg');
   }
 
-  // Define the species to be a Number
-  static get [Symbol.species]() {
-    return Number; 
-  }
+  // Cast the radians to a number primitive
+  [Symbol.toPrimitive](type) {
 
-  // Cast the radians to a number primative
-  [Symbol.toPrimitive]() {
+    // Cast the number to a string and return the angle in degrees
+    if (type == 'string') return `${this.degrees}°`;
+    
+    // Cast the number to a number
     return Number(this.radians);
   } 
 
@@ -95,12 +95,5 @@ export class Angle {
 
     // Bind the angle in degrees
     this.radians = radians(angle);
-  }
-
-  // Get the angle as a string in degrees
-  toString() {
-
-    // Return the angle in degrees
-    return `${this.degrees}°`;
   }
 }

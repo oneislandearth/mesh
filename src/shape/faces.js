@@ -6,12 +6,13 @@ import { Face } from 'shape/face';
 
 // Import the required shape utilities
 import { Triangulator } from 'shape/utils/triangulator';
-// Import { Facewinder } from 'shape/utils/facewinder';
+import { Facewinder } from 'shape/utils/facewinder';
 
 // Import the core mesh module
 import { Mesh } from 'mesh/mesh';
 
 // Import the required utilities
+import { Watcher } from 'utils/watcher';
 import { Validator } from 'utils/validator';
 
 // Define a validator for the class
@@ -26,44 +27,31 @@ export class Faces extends Array {
     // Throw an error if the mesh in not a Mesh
     validate({ mesh, Mesh });
 
-    // Iterate through each of the faces
-    for (const i in faces) {
+    // Create a list of triangulated faces
+    const triangulatedFaces = [];
 
-      // Extract the current face
-      const face = faces[i];
+    // Iterate through each of the faces
+    for (const face of faces) {
 
       // Check if the face has three points
       if (face.length == 3) {
         
-        // Map the current face to a Face
-        faces.splice(i, 1, new Face(face, mesh));
+        // Map the current face to a Face and push to the triangulated faces
+        triangulatedFaces.push(new Face(face, mesh));
 
         // Skip to the next face
         continue;
       }
 
-      // Extract the sub faces from the triangulator
-      const { splitFaces } = new Triangulator({
+      // Triangulate the current face
+      const triangulator = new Triangulator(face, mesh);
 
-        // Add the indices of the face
-        indices: face,
-
-        // Add the vertices of the face
-        vertices: face.map(vertex => mesh.vertices[vertex])
-      });
-
-      // Map the new Faces from the sub faces
-      faces.splice(i, 1, splitFaces.map(face => new Face(face, mesh)));
+      // Map the triangulated faces to Faces and push them to the triangulated faces
+      triangulatedFaces.push(...triangulator.toFaces(mesh));
     }
 
-    // Flatten the ffaces
-    faces = faces.flat();
-
-    // Wind the faces in the correct order (all inwards or outwards)
-    // ({ faces } = new Facewinder(faces));
-
-    // Bind the array to the class
-    super(...faces);
+    // Bind the triangulated faces to the class
+    super(...triangulatedFaces);
 
     // Define the reference to the mesh
     this.mesh = mesh;
@@ -78,9 +66,23 @@ export class Faces extends Array {
   get area() {
 
     // Calculate the sum of face area
-    const value = this.reduce((sum, { area }) => add(sum, area), 0);
+    const value = this.reduce((sum, { area }) => add(sum, Number(area)), 0);
 
     // Return as a unit in meters
     return toMeters(value);
+  }
+
+  // Compute the correct face normals
+  computeNormals() {
+
+    // Perform facewinding to ensure the faces normals point outwards
+    const { faces } = new Facewinder(this);
+
+  }
+
+  // Cast the faces to a string
+  toString() {
+
+    return JSON.stringify(this.map(f => f.toString()));
   }
 }

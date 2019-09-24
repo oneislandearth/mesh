@@ -21,6 +21,9 @@ test('Angles: values match', (result) => {
 
   // Check the angle in degrees
   result.is(angle.degrees, 180);
+
+  // Check the angle in degrees as a string
+  result.is(`Angle: ${angle}`, `Angle: 180°`);
 });
 
 // Angles from eval (degrees)

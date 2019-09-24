@@ -26,6 +26,11 @@ export class Vector extends Array {
     super(x, y, z);
   }
 
+  // Define the species to be an array
+  static get [Symbol.species]() {
+    return Array; 
+  }
+
   // Define a zeroes helper function
   static zeroes() {
 
@@ -38,11 +43,6 @@ export class Vector extends Array {
 
     // Return a Vector with 1, 1, 1
     return new Vector([1, 1, 1]);
-  }
-
-  // Define the species to be an array
-  static get [Symbol.species]() {
-    return Array; 
   }
 
   // Determine the x value of the vector

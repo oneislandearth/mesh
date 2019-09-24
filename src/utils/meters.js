@@ -1,19 +1,20 @@
 // Define a class for returning numbers as meters with units
-export class Meters extends Number {
+export class Meters {
 
   // Pass the number to Number
   constructor(number) {
-    super(number);
-  }
-
-  // Define the value to return as a number
-  static get() {
-    return this; 
+    
+    // Bind the number value
+    this.value = number;
   }
 
   // Round the mesh to three significant figures as to include up to milimeters
-  toString() {
-    return `${this.toFixed(3)} meters`;
-  }
+  [Symbol.toPrimitive](type) {
 
+    // Cast the number to a string
+    if (type == 'string') return `${this.value.toFixed(3)} meters`;
+    
+    // Cast the number to a number
+    return Number(this.value);
+  }
 }

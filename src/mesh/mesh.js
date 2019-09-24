@@ -1,5 +1,5 @@
 // Import the required math functions
-import { add, divide } from 'utils/math';
+import { add, divide, multiply, dot } from 'utils/math';
 
 // Import the required geometry modules
 import { Point } from 'geometry/point';
@@ -18,6 +18,9 @@ export class Mesh {
 
     // Bind the faces to the mesh
     this.faces = new Faces(faces, this);
+
+    // Compute the correct face normals
+    this.faces.computeNormals();
   }
 
   // Compute the edges of the face
@@ -47,7 +50,31 @@ export class Mesh {
     return new Point(point);
   }
 
+  // Calculate the area of the mesh
+  get area() {
+
+    // Return the area of the mesh
+    return this.faces.area;
+  }
+
+  // Calculate the volume of the mesh
+  get volume() {
+
+    // Return the volume of the mesh
+    return divide(this.faces.reduce((sum, face) => add(sum, multiply(dot(face.a, face.normal), Number(face.area))), 0), 3);
+  }
+
   // Subtract(mesh) {
 
   // }
+
+  // Cast the mesh to a string
+  toString() {
+
+    // Return the stringified data on the mesh
+    return JSON.stringify({
+      vertices: this.vertices,
+      faces: this.faces
+    });
+  }
 }

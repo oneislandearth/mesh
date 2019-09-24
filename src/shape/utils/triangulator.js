@@ -1,6 +1,9 @@
 // Import the required geometry modules
 import { Polygon } from 'geometry/polygon';
 
+// Import the required shape modules
+import { Face } from 'shape/face';
+
 // Import the required utilities
 import { CircularArray } from 'utils/circular';
 import { Validator } from 'utils/validator';
@@ -9,16 +12,19 @@ import { Validator } from 'utils/validator';
 const { validate } = new Validator('Triangulator');
 
 // Triangulate a face based on a modification of the two-ears algorithm
-export class Triangulator {
+export class Triangulator extends CircularArray {
 
   // Create a triangulation from a face
-  constructor({ indices, vertices }) {
+  constructor(face, mesh = null) {
 
-    // Bind the indices as a circular array
-    this.indices = new CircularArray(indices);
+    // Define the indices as the face data
+    const indices = face;
 
-    // Bind the vertices
-    this.vertices = vertices;
+    // Map the indices to vertices
+    const vertices = indices.map(vertex => mesh.vertices[vertex]);
+
+    // Bind the indices and vertices to a circular array
+    super({ indices, vertices });
 
     // Define the list of faces which have been found
     this.splitFaces = [];
@@ -39,12 +45,11 @@ export class Triangulator {
     if (polygon.clockwise) {
       
       // Reverse the order of indices and vertices
-      this.indices.reverse();
-      this.vertices.reverse();
+      this.reverse();
     }
 
     // Iterate through each of the indices
-    while (this.indices.length > 2) {
+    while (this.length > 2) {
 
       // Select the current face from the vertices
       const splitFace = this.sliceFace();
@@ -53,10 +58,10 @@ export class Triangulator {
       if (!this.extractSplitFace(splitFace)) {
 
         // Skip to the next face extraction as this is not an ear
-        this.indices.current++;
+        this.current++;
 
         // Resest to zero as the length has been exceeded
-        if (this.indices.current == this.indices.length) this.indices.current = 0;
+        if (this.current == this.length) this.current = 0;
       }
     }
   }
@@ -65,24 +70,23 @@ export class Triangulator {
   sliceFace(centralIndex = null) {
 
     // Remember the old index value
-    const currentIndex = this.indices.current;
+    const currentIndex = this.current;
 
     // Update the current index to be the central index
-    if (centralIndex !== null) this.indices.current = centralIndex;
+    if (centralIndex !== null) this.current = centralIndex;
 
-    // Extracct the indices for the triangle
-    const [i0, i1, i2] = [this.indices.previous, this.indices.current, this.indices.next];
+    // Extract the indices for the triangle
+    const indices = this.values('indices');
 
     // Extract the vertices for the triangle
-    const [v0, v1, v2] = [this.vertices[i0], this.vertices[i1], this.vertices[i2]];
+    const vertices = this.values('vertices');
 
     // Restore the current index
-    if (centralIndex !== null) this.indices.current = currentIndex;
+    if (centralIndex !== null) this.current = currentIndex;
 
     // Return the indices and vertices of the sub face
-    return { indices: [i0, i1, i2], vertices: [v0, v1, v2] };
+    return { indices, vertices };
   }
-
 
   // Check whether a split face is valid and if so add it to the list of split faces
   extractSplitFace({ indices, vertices }) {
@@ -129,9 +133,26 @@ export class Triangulator {
     this.splitFaces.push(indices);
 
     // Remove the central vertex from the indices and update the current to be the central vertex of the next split face
-    this.indices.remove(1);
+    this.remove(1);
 
     // Return true as the face was extracted
     return true;
+  }
+
+  // Extract the faces
+  toFaces(mesh) {
+
+    // Create a list of faces
+    const faces = [];
+
+    // Iterate through each of the split faces
+    for (const splitFace of this.splitFaces) {
+
+      // Create a face from the triangle
+      faces.push(new Face(splitFace, mesh));
+    }
+
+    // Return the list of faces
+    return faces;
   }
 }

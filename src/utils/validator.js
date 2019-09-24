@@ -72,8 +72,29 @@ export class Validator {
         // Describe the options for instanceof checking
         const [variable, type] = Object.values(options);
 
-        // Check if the variable equals a specified type
-        passed = isInstanceOf({ variable, type });
+        // Check if the type is an array of types
+        if (type instanceof Array) {
+
+          // Check if the value equals any of the types
+          for (const each of type) {
+
+            // Check if the variable equals a specified type
+            if (isInstanceOf({ variable, each })) {
+
+              // Set passed to true
+              passed = true;
+
+              // Break the loop
+              break;
+            }
+          }
+         
+        // Check the type from a singlular type 
+        } else {
+
+          // Check if the variable equals a specified type
+          passed = isInstanceOf({ variable, type });
+        }
       }
       
       // If the checks fail

@@ -5,14 +5,13 @@ import test from 'ava';
 const { Mesh } = require('lib');
 
 // Values match expected
-test('Mesh triangularization', (result) => {
+test('Mesh: creation from non-triangular faces', (result) => {
 
   // Define the size of a cube
   const size = 10;
 
   // Scale the size in directions (neg, pos)
   const [neg, pos] = [(size / 2), (-size / 2)];
-
 
   // Create the box 
   const mesh = new Mesh({
@@ -39,6 +38,11 @@ test('Mesh triangularization', (result) => {
 
   });
 
-  // Results
+  // Check the vertex and face data is correct
+  result.assert(mesh.vertices.length == 8);
   result.assert(mesh.faces.length == 12);
+
+  // Check that the area and volume are correct
+  result.assert(mesh.area == 600);
+  result.assert(mesh.volume == 1000);
 });

@@ -1,5 +1,5 @@
 // Import the required math functions
-import { divide, add, subtract, norm, cross, minus, dot, toMeters } from 'utils/math';
+import { divide, add, subtract, norm, cross, dot, toMeters } from 'utils/math';
 
 // Import the required geometry modules
 import { Plane } from 'geometry/plane';
@@ -37,10 +37,10 @@ export class Face extends Array {
     validate({ c, Number });
 
     // Throw an error if the mesh in not a Mesh
-    if (mesh) validate({ mesh, Mesh });
+    validate({ mesh, Mesh });
 
     // Call the super function to bind our indices
-    super([a, b, c]);
+    super(a, b, c);
 
     // Bind the reference to the current mesh if there is one
     this.mesh = mesh;
@@ -87,7 +87,7 @@ export class Face extends Array {
     if (!this.mesh) throw new Error(`Cannot compute the face plane - the face is not bound to a Mesh`);
 
     // Calculate the normal of the Plane
-    const normal = new Direction(cross(minus(this.b, this.a), minus(this.c, this.a)));
+    const normal = new Direction(cross(subtract(this.b, this.a), subtract(this.c, this.a)));
 
     // Calculate the scalar of the Plane
     const scalar = dot(normal, this.a);
@@ -111,9 +111,9 @@ export class Face extends Array {
 
     // Return the edges in the face (ab, bc, ca)
     return [
-      new Edge([this.a, this.b], this.mesh), 
-      new Edge([this.b, this.c], this.mesh), 
-      new Edge([this.c, this.a], this.mesh)
+      new Edge([this[0], this[1]], this.mesh), 
+      new Edge([this[1], this[2]], this.mesh), 
+      new Edge([this[2], this[0]], this.mesh)
     ];
   }
 
@@ -153,7 +153,7 @@ export class Face extends Array {
     for (const face of this.mesh.faces) {
 
       // Find the adjacent edge between the face if possible
-      const adjacentEdge = this.adjacentFaces(face);
+      const adjacentEdge = this.adjacentEdge(face);
 
       // Skip to the next face if there is no adjacent edge
       if (!adjacentEdge) continue;
@@ -192,38 +192,22 @@ export class Face extends Array {
     return null;
   }
 
-  // Reorder the indices in the face
-  reorder(order) {
+  // Update the indices in the face
+  update([a, b, c]) {
 
-    // Define the validation function to check the face is valid
-    const equals = (order) => {
+    // Throw an error if a is not a Number
+    validate({ a, Number });
 
-      // Define a sum of indexes
-      let sum = 0;
+    // Throw an error if b is not a Number
+    validate({ b, Number });
 
-      // Define the valid options (0, 1, 2)
-      const valid = [0, 1, 2];
+    // Throw an error if c is not a Number
+    validate({ c, Number });
 
-      // Iterate through each of the points in the order
-      for (const value of order) {
-
-        // Add the value to the sum
-        sum += valid.indexOf(Number(value));
-      }
-      
-      // Return true if there is a 0, 1 and a 2
-      return (sum == 3);
-    };
-
-    // Throw an error if the order is not valid
-    validate({ order, equals, expects: '"order" to be a valid order of indices (0, 1, 2)' });
-
-    console.log(order);
-
-    // Change the order of the faces
-    this[0] = this[order[0]];
-    this[1] = this[order[1]];
-    this[2] = this[order[2]];
+    // Update the indices
+    this[0] = a;
+    this[1] = b;
+    this[2] = c;
   }
 
   // Flip the current face
