@@ -12,8 +12,10 @@
   ],
   "main": "lib/index.js",
   "scripts": {
-    "test": "oneisland-babler lib && ava",
-    "prepublishOnly": "oneisland-babler lib"
+    "build": "oneisland-babler lib",
+    "examples": "npm run build && node examples/cube.js && node examples/icosahedron.js",
+    "test": "npm run build && ava",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "mathjs": "^6.2.1"
