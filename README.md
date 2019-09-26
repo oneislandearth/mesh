@@ -1,7 +1,5 @@
 # Mesh
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/oneislandearth/mesh.svg)](https://greenkeeper.io/)
-
 A simple library for creating and working with 3D meshes in Javascript
 
 ## Documentation
