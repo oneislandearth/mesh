@@ -21,7 +21,7 @@
     "mathjs": "^6.2.1"
   },
   "devDependencies": {
-    "@oneisland/babler": "0.0.5",
+    "@oneisland/babler": "0.0.6",
     "@oneisland/linter": "0.0.7",
     "ava": "^2.3.0"
   },
