@@ -8,8 +8,8 @@ import { Vector } from 'geometry/vector';
 import { Angle } from 'geometry/utils/angle';
 import { Direction } from 'geometry/utils/direction';
 
-// Import the required utilities
-import { Validator } from 'utils/validator';
+// Import the validator utility
+import { Validator } from '@oneisland/validator';
 
 // Define a validator for the class
 const { validate } = new Validator('Quaternion');
@@ -21,20 +21,27 @@ export class Quaternion extends Array {
   constructor({ scalar, vector }) {
 
     // Throw an error if the scalar is not a Number
-    validate({ scalar, Number });
+    validate({ scalar }, 'Number');
 
     // Throw an error if the vector is not a Vector
-    validate({ vector, Vector });
+    validate({ vector }, 'Vector');
 
     // Call the super function to bind our coodinates to the array
     super(scalar, ...vector);
+  }
+
+  // Define the species
+  get species() {
+  
+    // Define the species as 'Quaternion'
+    return 'Quaternion';
   }
 
   // Create a new Quaternion from a Vector
   static fromVector({ vector }) {
 
     // Throw an error if the vector is not a Vector
-    validate({ vector, Vector });
+    validate({ vector }, 'Vector');
 
     // Return the new Quaternion
     return new Quaternion({ scalar: 0, vector });
@@ -44,10 +51,10 @@ export class Quaternion extends Array {
   static fromAngleAndDirection({ angle, direction }) {
 
     // Throw an error if the angle is not an Angle
-    validate({ angle, Angle });
+    validate({ angle }, 'Angle');
 
     // Throw an error if the direction is not a Direction
-    validate({ direction, Direction });
+    validate({ direction }, 'Direction');
 
     // Extract the x, y and z values from the direction
     const [x, y, z] = direction;
@@ -82,7 +89,7 @@ export class Quaternion extends Array {
     // The passed (quaternion) quaternion must be the point quaterion
 
     // Throw an error if the quaternion is not a Quaternion
-    if (!(quaternion instanceof Quaternion)) throw new TypeError('Quaternion.multiply expects "quaternion" to be a Quaternion');
+    validate({ quaternion }, 'Quaternion');
 
     // Extract the scalar and vector values from the quaternions
     const [s1, v1] = [this.scalar, this.vector];

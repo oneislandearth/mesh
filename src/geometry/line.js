@@ -8,8 +8,8 @@ import { Plane } from 'geometry/plane';
 // Import the required geometry utiliites
 import { Direction } from 'geometry/utils/direction';
 
-// Import the required utilities
-import { Validator } from 'utils/validator';
+// Import the validator utility
+import { Validator } from '@oneisland/validator';
 
 // Define a validator for the class
 const { validate } = new Validator('Line');
@@ -21,24 +21,28 @@ export class Line {
   constructor({ point, direction }) {
 
     // Throw an error if the point is not a Point
-    validate({ point, Point });
+    validate({ point }, 'Point');
 
     // Throw an error if the direction is not a Direction
-    validate({ direction, Direction });
+    validate({ direction }, 'Direction');
 
     // Bind the point and direction
     this.point = point;
     this.direction = direction;
   }
 
+  // Define the species
+  get species() {
+
+    // Define the species as 'Line'
+    return 'Line';
+  }
+
   // Create a new line from two points
   static fromPoints([a, b]) {
 
-    // Throw an error if a is not a Point
-    validate({ a, Point });
-
-    // Throw an error if a is not a Point
-    validate({ b, Point });
+    // Throw an error if a or b is not a Point
+    validate({ a, b }, 'Point');
 
     // Return the new Line
     return new Line({
@@ -55,7 +59,7 @@ export class Line {
   pointFromDistance(distance) {
 
     // Throw an error if the distance is not a Number
-    validate({ distance, Number });
+    validate({ distance }, 'Number');
 
     // Calculate the new point from the distance
     const point = add(this.point, multiply(distance, this.direction));
@@ -68,7 +72,7 @@ export class Line {
   lineFromDistance(distance) {
 
     // Throw an error if the distance is not a Number
-    validate({ distance, Number });
+    validate({ distance }, 'Number');
 
     // Return a new Line along the line
     return new Line({ 
@@ -85,7 +89,7 @@ export class Line {
   pointOfIntersectionWithPlane(plane) {
 
     // Throw an error if plane is not a Plane
-    validate({ plane, Plane });
+    validate({ plane }, 'Plane');
 
     // Return if there is no intersection between the line and plane
     if (dot(plane.normal, this.direction)) return null;
@@ -101,7 +105,7 @@ export class Line {
   pointOfIntersectionWithLine(line) {
 
     // Throw an error if line is not a Line
-    validate({ line, Line });
+    validate({ line }, 'Line');
 
     // Return if there is no intersection between the two lines
     if (cross(line.direction, subtract(this.point, line.point)) || cross(line.direction, this.direction)) return null;    

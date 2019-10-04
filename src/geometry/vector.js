@@ -1,8 +1,8 @@
 // Import the required math functions
 import { norm } from 'utils/math';
 
-// Import the required utilities
-import { Validator } from 'utils/validator';
+// Import the validator utility
+import { Validator } from '@oneisland/validator';
 
 // Define a validator for the class
 const { validate } = new Validator('Vector');
@@ -13,17 +13,18 @@ export class Vector extends Array {
   // Create a Vector from the x, y and z
   constructor([x, y, z]) {
 
-    // Throw an error if the x value is not a Number
-    validate({ x, Number });
-
-    // Throw an error if the y value is not a Number
-    validate({ y, Number });
-    
-    // Throw an error if the z value is not a Number
-    validate({ z, Number });
+    // Throw an error if the x, y or z value is not a Number
+    validate({ x, y, z }, 'Number');
 
     // Call the super function to bind x, y, and z to the array
     super(x, y, z);
+  }
+
+  // Define the species
+  get species() {
+
+    // Define the species as 'Vector'
+    return 'Vector';
   }
 
   // Define the species to be an array

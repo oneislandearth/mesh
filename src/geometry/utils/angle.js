@@ -1,8 +1,8 @@
 // Import the required math functions
 import { radians, degrees } from 'utils/math';
 
-// Import the required utilities
-import { Validator } from 'utils/validator';
+// Import the validator utility
+import { Validator } from '@oneisland/validator';
 
 // Define a validator for the class
 const { validate } = new Validator('Angle');
@@ -17,10 +17,17 @@ export class Angle {
     angle = ((angle.re) ? angle.re : angle);
 
     // Throw an error if the angle is not a Number
-    validate({ angle, Number });
+    validate({ angle }, 'Number');
 
     // Bind the angle in radians
     this.angle = angle;
+  }
+
+  // Define the species
+  get species() {
+    
+    // Define the species as 'Angle'
+    return 'Angle';
   }
 
   // Create an angle from a string (e.g. 180deg)
@@ -30,7 +37,7 @@ export class Angle {
     let [angle] = (/(([\d]*\.*[\d]+)||([\d]+\.*[\d]*))/).exec(string);
 
     // Throw an error if the angle string does not contain a number
-    validate({ angle, expects: '"string" to contain digits within in the string' });
+    validate({ angle }, (a) => a, '"string" to contain digits within in the string');
 
     // Cast the angle to a number
     angle = Number(angle);
@@ -74,7 +81,7 @@ export class Angle {
   set radians(angle) {
 
     // Throw an error if the angle is not a Number
-    validate({ angle, Number });
+    validate({ angle }, 'Number');
   
     // Bind the angle in radians
     this.angle = angle;
@@ -91,7 +98,7 @@ export class Angle {
   set degrees(angle) {
 
     // Throw an error if the angle is not a Number
-    validate({ angle, Number });
+    validate({ angle }, 'Number');
 
     // Bind the angle in degrees
     this.radians = radians(angle);

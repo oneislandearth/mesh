@@ -13,6 +13,10 @@ export class Mesh {
 
   constructor({ vertices, faces }) {
 
+    // Bind an empty array of vertices and faces
+    this.vertices = [];
+    this.faces = [];
+
     // Bind the vertices to the mesh
     this.vertices = new Vertices(vertices, this);
 
@@ -21,6 +25,13 @@ export class Mesh {
 
     // Compute the correct face normals
     this.faces.computeNormals();
+  }
+
+  // Define the species
+  get species() {
+
+    // Define the species as 'Mesh'
+    return 'Mesh';
   }
 
   // Compute the edges of the face
@@ -62,6 +73,16 @@ export class Mesh {
 
     // Return the volume of the mesh
     return divide(this.faces.reduce((sum, face) => add(sum, multiply(dot(face.a, face.normal), Number(face.area))), 0), 3);
+  }
+
+  // Dispose the mesh
+  dispose() {
+
+    // Dispose each of the faces and vertices
+    this.faces = null;
+    this.vertices = null;
+
+    // Delete this;
   }
 
   // Subtract(mesh) {

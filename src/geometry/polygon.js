@@ -1,15 +1,15 @@
 // Import the required math functions
-import { cross, dot, add, abs, divide, subtract, unit } from 'utils/math';
+import { cross, dot, add, abs, divide, subtract, max, multiply } from 'utils/math';
 
 // Import the required geometry modules
 import { Plane } from 'geometry/plane';
 import { Point} from 'geometry/point';
 
-// Import the required utilities
-import { Validator } from 'utils/validator';
+// Import the validator utility
+import { Validator } from '@oneisland/validator';
 
 // Define a validator for the class
-const { validate } = new Validator('Polygon');
+const { validate, validateAll } = new Validator('Polygon');
 
 // Create a polygon which represents an arbitary shaped shape in 3D space
 export class Polygon extends Array {
@@ -18,20 +18,38 @@ export class Polygon extends Array {
   constructor(points) {
 
     // Check that the polygon contains three or more points
-    const equals = (points) => (points.length > 2);
+    // const equals = (points) => (points.length > 2);
 
     // Throw an error if there are less than three points
-    validate({ points, equals, expects: `"points" to contain at least three points` });
+    // validate({ points, equals, expects: `"points" to contain at least three points` });
 
     // Check all of the points are valid
-    for (const point of points) {
+    // for (const point of points) {
 
-      // Throw an error if the point is not a Point
-      validate({ point, Point, expects: `"points" to be an array of Point instances` });
-    }
+    //   // // Cast to a Point if there is a 'toPoint' function on the point (must be a vertex)
+    //   // if (points[i].toPoint) points[i] = points[i].toPoint();
+
+    //   // Throw an error if the point is not a Point
+    //   validate({ point, Point, expects: `"points" to be an array of Point instances` });
+    // }
+
+    // Check the polygon contains three or more points
+    validate({ points }, (p) => p.length > 2, `"points" to contain at least three points`);
+
+    // Console.log(points[0].species);
+
+    // Check that the points are all points
+    validateAll({ points }, ['Point', 'Vertex'], `"points" to be an array of Point instances`);
 
     // Bind the the points to the polygon
     super(...points);
+  }
+
+  // Define the species
+  get species() {
+
+    // Define the species as 'Polygon'
+    return 'Polygon';
   }
 
   // Compute the plane of the polygon
@@ -88,28 +106,73 @@ export class Polygon extends Array {
     return false;
   }
 
-  // Compute whether the polygon is coplaner
-  get coplaner() {
+  // // Compute whether the polygon is coplanar
+  // get coplanar() {
 
-    // Iterate through each of the points in the polygon
-    for (const point of this) {
+  //   // Iterate through each of the points in the polygon
+  //   for (const point of this) {
 
-      // Return false if the point is not on the plane
-      if (!this.plane.containsPoint(point)) return false;
-    }
+  //     // Return false if the point is not on the plane
+  //     if (!this.plane.containsPoint(point)) return false;
+  //   }
 
-    // Return true as the polygon is coplaner
-    return true;
-  }
+  //   // Return true as the polygon is coplanar
+  //   return true;
+  // }
 
   // Flip
   flip() {
     this.plane.flip();
   }
 
-  // Contains a point
+  // Check if a point is contained inside the polygon using the ray-casting method
   containsPoint(point) {
 
-    return false;
+    // Return false if the point is not on the plane
+    if (!this.plane.containsPoint(point)) return false;
+
+    // Define a flag for counting the even / odd crosses
+    let inside = 0;
+    
+    // Find the largest index (x, y, z) from the polygon normal
+    const projectionIndex = this.normal.findIndex(value => (value == max(...this.normal)));
+
+    // Project the point to the polygon plane and remove the vertex component from the point which equals the projection index
+    const pointProjected = point.projectToPlane(this.plane).filter((v, index) => (index != projectionIndex));
+
+    // Remove the vertex component from each of the polygon vertices which equal the projection index
+    const polygonProjected = [...this].map(polygon => polygon.filter((v, index) => (index != projectionIndex)));
+
+    // Extract the x and y values from the projected point
+    const [x, y] = pointProjected;
+   
+    // Let j be the index before the first index i (the last index as i is 0)
+    let j = (polygonProjected.length - 1);
+
+    // Iterate through each of the projected points in the polygon
+    for (const i in polygonProjected) {
+
+      // Extract the x and y values of index i
+      const [xi, yi] = polygonProjected[i];      
+      
+      // Extract the x and y values of index j
+      const [xj, yj] = polygonProjected[j];
+
+      // Check whether the lines crosses the horizontal line at y in either direction, and ignore edges which it doesn't intersect with
+      if (((yi <= y) && (yj > y)) || ((yj <= y) && (yi > y))) {
+
+        // Find the intersection where the point crosses the edge of the polgygon
+        const intersection = add(divide(multiply(subtract(xj, xi), subtract(y, yi)), subtract(yj, yi)), xi);
+
+        // Check if the intersection crosses to the left of the point, and if so toggle the inside / outside check
+        if (x < intersection) inside = !inside;
+      }
+
+      // Set j to the value of i
+      j = i;
+    }
+
+    // If the number of crosses is odd then the point is inside
+    return Boolean(inside);
   }
 }

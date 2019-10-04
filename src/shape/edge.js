@@ -14,8 +14,8 @@ import { Vertex } from 'shape/vertex';
 // Import the core mesh module
 import { Mesh } from 'mesh/mesh';
 
-// Import the required utilities
-import { Validator } from 'utils/validator';
+// Import the validator utility
+import { Validator } from '@oneisland/validator';
 
 // Define a validator for the class
 const { validate } = new Validator('Edge');
@@ -26,20 +26,24 @@ export class Edge extends Array {
   // Bind the indices of an edge with reference to the mesh
   constructor([a, b], mesh = null) {
 
-    // Throw an error if a is not a Number
-    validate({ a, Number });
-
-    // Throw an error if b is not a Number
-    validate({ b, Number });
+    // Throw an error if a or b is not a Number
+    validate({ a, b }, 'Number');
 
     // Throw an error if the mesh in not a Mesh
-    validate({ mesh, Mesh });
+    validate({ mesh }, 'Mesh');
 
     // Call the super function to bind the indices
     super(a, b);
 
     // Bind the reference to the current mesh if there is one
     this.mesh = mesh;
+  }
+
+  // Define the species
+  get species() {
+  
+    // Define the species as 'Edge'
+    return 'Edge';
   }
 
   // Define the species to be an array
@@ -118,7 +122,10 @@ export class Edge extends Array {
   equals(edge) {
 
     // Throw an error if face is not a Face
-    validate({ edge, Edge });
+    validate({ edge }, 'Edge');
+
+    // Clone and reverse the edge
+    // const reversed = new Edge(edge.slice().reverse(), this.mesh);
 
     // Check that the edges equal the same value
     return (this.toString() === edge.toString());
@@ -128,7 +135,7 @@ export class Edge extends Array {
   contains(vertex) {
 
     // Throw an error if vertex is not a Vertex
-    validate({ vertex, Vertex });
+    // validate({ vertex, Vertex });
 
     // Find the vertex within the edge
     const match = this.vertices.filter(v => v.toString() == vertex.toString());

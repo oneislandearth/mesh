@@ -10,13 +10,9 @@ import { Direction } from 'geometry/utils/direction';
 
 // Import the required shape modules
 import { Edge } from 'shape/edge';
-import { Vertex } from 'shape/vertex';
 
-// Import the core mesh module
-import { Mesh } from 'mesh/mesh';
-
-// Import the required utilities
-import { Validator } from 'utils/validator';
+// Import the validator utility
+import { Validator } from '@oneisland/validator';
 
 // Define a validator for the class
 const { validate } = new Validator('Face');
@@ -27,17 +23,11 @@ export class Face extends Array {
   // Bind the indices to the mesh and any mesh
   constructor([a, b, c], mesh = null) {
 
-    // Throw an error if a is not a Number
-    validate({ a, Number });
-
-    // Throw an error if b is not a Number
-    validate({ b, Number });
-
-    // Throw an error if c is not a Number
-    validate({ c, Number });
+    // Throw an error if a, b or c is not a Number
+    validate({ a, b, c }, 'Number');
 
     // Throw an error if the mesh in not a Mesh
-    validate({ mesh, Mesh });
+    validate({ mesh }, 'Mesh');
 
     // Call the super function to bind our indices
     super(a, b, c);
@@ -46,9 +36,26 @@ export class Face extends Array {
     this.mesh = mesh;
   }
 
+  // Define the species
+  get species() {
+  
+    // Define the species as 'Face'
+    return 'Face';
+  }
+
   // Define the species to be an array
   static get [Symbol.species]() {
     return Array; 
+  }
+
+  // Find the index of the face in the mesh faces
+  get index() {
+
+    // Check if the face is bound to a mesh and if not throw an error
+    if (!this.mesh) throw new Error(`Cannot compute the index - the face is not bound to a Mesh`);
+
+    // Return the index of the face in the faces
+    return Number(this.mesh.faces.findIndex(face => face.equals(this)));
   }
 
   // Compute the value of vertex a
@@ -143,66 +150,61 @@ export class Face extends Array {
     // Check if the face is bound to a mesh and if not throw an error
     if (!this.mesh) throw new Error(`Cannot compute the adjacent faces - the face is not bound to a Mesh`);
 
-    // Define a list of adjacent faces (ab, cb, ca)
-    const adjacentFaces = [null, null, null];
+    // Return the list of adjacent faces
+    return [
+      
+      // Find face at edge ab/ba
+      this.findAdjacentFaceFromEdgeIndex(0), 
+      
+      // Find face at edge bc/cb
+      this.findAdjacentFaceFromEdgeIndex(1),
 
-    // Extract the edges from the current face
-    const [edgeAB, edgeBC, edgeCA] = this.edges;
-
-    // Find the faces which are shared
-    for (const face of this.mesh.faces) {
-
-      // Find the adjacent edge between the face if possible
-      const adjacentEdge = this.adjacentEdge(face);
-
-      // Skip to the next face if there is no adjacent edge
-      if (!adjacentEdge) continue;
-
-      // Check if the face shares edge a-b and add add this face to the adjacent faces
-      if (adjacentEdge.equals(edgeAB)) adjacentFaces[0] = face;
-
-      // Check if the face shares edge b-c and add add this face to the adjacent faces
-      if (adjacentEdge.equals(edgeBC)) adjacentFaces[1] = face;
-
-      // Check if the face shares edge c-a and add add this face to the adjacent faces
-      if (adjacentEdge.equals(edgeCA)) adjacentFaces[2] = face;
-    }
-
-    // Return the adjacent faces
-    return adjacentFaces;
+      // Find face at edge ca/ac
+      this.findAdjacentFaceFromEdgeIndex(2)
+    ];
   }
 
-  // Find the adjacent edge from a face
-  adjacentEdge(face) {
+  // Find an adjacent face from an edge index (0: ab, 1: bc, 2: ca)
+  findAdjacentFaceFromEdgeIndex(edgeIndex) {
 
-    // Throw an error if face is not a Face
-    validate({ face, Face });
+    // Check if the face is bound to a mesh and if not throw an error
+    if (!this.mesh) throw new Error(`Cannot compute the adjacent face fom the edge index - the face is not bound to a Mesh`);
 
-    // Extract the edges from the current face
-    const [edgeAB, edgeBC, edgeCA] = this.edges;
+    // Determine the vertex which make up the edge
+    const i0 = (edgeIndex);
+    const i1 = ((edgeIndex + 1) % 3);
 
-    // Iterate through all of the edges on the adjacent face
-    for (const edge of face.edges) {
+    // Determine the vertex which is not part of the edge
+    const i2 = ((edgeIndex + 2) % 3);
 
-      // Check if the edge matches one of the edges (a-b, b-c, c-a) and return the edge
-      if (edge.equals(edgeAB) || edge.equals(edgeBC) || edge.equals(edgeCA)) return edge;
-    }
+    // Find the index of the adjacent face
+    const faceIndex = this.mesh.faces.findIndex(face => {
+      
+      // Check that the face contains i0 and i1 (the edge)
+      const edgeCheck = (~face.indexOf(this[i0]) && ~face.indexOf(this[i1]));
 
-    // Return null as there is no adjacent edge
-    return null;
+      // Check that the face doesn't contain the current index (same face)
+      const otherCheck = (face.indexOf(this[i2]) == -1);
+
+      // Return true if the face is an adjacent face
+      return (edgeCheck && otherCheck);
+    });
+
+    // Return null if there is no face / face index, or return the face
+    return (~faceIndex) ? this.mesh.faces[faceIndex] : null;
   }
 
   // Update the indices in the face
   update([a, b, c]) {
 
     // Throw an error if a is not a Number
-    validate({ a, Number });
+    // validate(a, 'Number');
 
     // Throw an error if b is not a Number
-    validate({ b, Number });
+    // validate({ b, Number });
 
     // Throw an error if c is not a Number
-    validate({ c, Number });
+    // validate({ c, Number });
 
     // Update the indices
     this[0] = a;
@@ -232,7 +234,7 @@ export class Face extends Array {
   equals(face) {
 
     // Throw an error if face is not a Face
-    validate({ face, Face });
+    validate({ face }, 'Face');
 
     // Check that the faces equal the same value
     return (this.toString() === face.toString());
@@ -242,7 +244,7 @@ export class Face extends Array {
   contains(vertex) {
 
     // Throw an error if vertex is not a Vertex
-    validate({ vertex, Vertex });
+    // validate({ vertex, Vertex });
 
     // Find the vertex within the face
     const match = this.vertices.filter(v => v.toString() == vertex.toString());

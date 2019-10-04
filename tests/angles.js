@@ -57,7 +57,10 @@ test('Angles: eval function (radians)', (result) => {
 test('Angles: eval function (error)', (result) => {
   
   // Throw an error for non-numeric values
-  result.throws(() => Angle.eval('nothingNumberic'), 'Angle.eval expects "string" to contain digits within in the string');
+  const error = result.throws(() => Angle.eval('no numbers'));
+  
+  // Check the error is correct
+  result.assert(~String(error).indexOf('"string" to contain digits within in the string'));
 });
 
 // Angles addition

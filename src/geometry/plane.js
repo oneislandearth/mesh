@@ -1,5 +1,5 @@
 // Import the required math functions
-import { cross, dot, add, multiply, divide, subtract } from 'utils/math';
+import { cross, dot, add, multiply, divide, subtract, epsilon } from 'utils/math';
 
 // Import the required geometry modules
 import { Line } from 'geometry/line';
@@ -9,8 +9,8 @@ import { Polygon } from 'geometry/polygon';
 // Import the required geometry utilities
 import { Direction } from 'geometry/utils/direction';
 
-// Import the required utilities
-import { Validator } from 'utils/validator';
+// Import the validator utility
+import { Validator } from '@oneisland/validator';
 
 // Define a validator for the class
 const { validate } = new Validator('Plane');
@@ -22,28 +22,28 @@ export class Plane {
   constructor({ normal, scalar }) {
 
     // Throw an error if the normal is not a Direction
-    validate({ normal, Direction });
+    validate({ normal }, 'Direction');
 
     // Throw an error if the scalar is not a Number
-    validate({ scalar, Number });
+    validate({ scalar }, 'Number');
 
     // Bind the normal and scalar
     this.normal = normal;
     this.scalar = scalar;
   }
 
-  // Define the tolerance used for splitting planes
-  static get tolerance() {
+  // Define the species
+  get species() {
 
-    // Return the tolerance
-    return 1e-4;
+    // Define the species as 'Plane'
+    return 'Plane';
   }
 
   // Create a plane from a polygon
   static fromPolygon(polygon) {
 
     // Throw an error if the polygon is not a Polygon
-    validate({ polygon, Polygon });
+    validate({ polygon }, 'Polygon');
 
     // Calculate the normal of the Plane
     const normal = new Direction(cross(subtract(polygon[1], polygon[0]), subtract(polygon[2], polygon[0])));
@@ -67,7 +67,7 @@ export class Plane {
   scale(distance) {
 
     // Throw an error if the distance is not a Number
-    validate({ distance, Number });
+    validate({ distance }, 'Number');
 
     // Scale the plane by a distance
     this.scalar = add(this.scalar, distance);
@@ -77,14 +77,14 @@ export class Plane {
   containsPoint(point) {
 
     // Determine if the plane contains a point
-    return (subtract(this.scalar, dot(this.normal, point)) <= Plane.tolerance);
+    return (subtract(this.scalar, dot(this.normal, point)) <= epsilon);
   }
 
   // Calculate the line of intersection with another plane
   lineOfIntersectionWith(plane) {
 
     // Throw an error if the plane is not a Plane
-    validate({ plane, Plane });
+    validate({ plane }, 'Plane');
 
     // Extract the normal and scalar values from the planes
     const [n1, s1] = [this.normal, this.scalar];

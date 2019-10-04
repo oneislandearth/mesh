@@ -3,15 +3,10 @@ import { Point } from 'geometry/point';
 import { Vector } from 'geometry/vector';
 
 // Import the required geometry utilities
-import { Angle } from 'geometry/utils/angle';
-import { Direction } from 'geometry/utils/direction';
 import { Quaternion } from 'geometry/utils/quaternion';
 
-// Import the core mesh module
-import { Mesh } from 'mesh/mesh';
-
 // Import the required utilities
-import { Validator } from 'utils/validator';
+import { Validator } from '@oneisland/validator';
 
 // Define a validator for the class
 const { validate } = new Validator('Vertex');
@@ -22,23 +17,24 @@ export class Vertex extends Point {
   // Create a Vertex from the x, y, z coordinates
   constructor([x, y, z], mesh = null) {
 
-    // Throw an error if the x value is not a Number
-    validate({ x, Number });
-
-    // Throw an error if the y value is not a Number
-    validate({ y, Number });
-    
-    // Throw an error if the z value is not a Number
-    validate({ z, Number });
+    // Throw an error if the x, y or z value is not a Number
+    validate({ x, y, z }, 'Number');
 
     // Throw an error if the mesh in not a Mesh
-    if (mesh) validate({ mesh, Mesh });
+    validate({ mesh }, 'Mesh');
 
     // Pass the coordianted to the super function
     super([x, y, z]);
 
     // Bind the reference to the current mesh if there is one
     this.mesh = mesh;
+  }
+
+  // Define the species
+  get species() {
+    
+    // Define the species as 'Vertex'
+    return 'Vertex';
   }
 
   // Define the species to be an array
@@ -50,10 +46,10 @@ export class Vertex extends Point {
   rotate({ angle, direction }) {
 
     // Throw an error if the angle is not an Angle
-    validate({ angle, Angle });
+    validate({ angle }, 'Angle');
 
     // Throw an error if the direction is not a Direction
-    validate({ direction, Direction });
+    validate({ direction }, 'Direction');
 
     // Cast the current point into a vector
     let vector = this.toVector();
@@ -74,6 +70,11 @@ export class Vertex extends Point {
   // Cast the Vertex to a Point
   toPoint() {
 
+    // Return a new Point
+    return new Point([this.x, this.y, this.z]);
+  }
+
+  get point() {
     // Return a new Point
     return new Point([this.x, this.y, this.z]);
   }

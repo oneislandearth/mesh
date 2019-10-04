@@ -4,13 +4,17 @@ import { create, all } from 'mathjs';
 // Import the meters class
 import { Meters } from 'utils/meters';
 
-// Congifure mathjs units (waiting for V7)
+// (roll out with for mathjs/7)
+// Congifure mathjs units
 // const math = create(all, {
 //   number: 'BigNumber'
 // });
 
 // Configue mathjs
 const math = create(all, {});
+
+// Epislon / tolerance
+math.epsilon = 1e-4;
 
 // Phi ratio / Golden ratio
 math.phi = math.divide(math.add(1, math.sqrt(5)), 2);
@@ -31,7 +35,7 @@ math.radians = (n) => math.multiply(n, math.radian);
 math.unit = (n) => math.divide(n, math.norm(n));
 
 // Check that a value a kind of number
-math.isNumber = (n) => (n !== null && (typeof n == 'number' || n instanceof math.BigNumber));
+math.isNumber = (n) => (n !== null && (typeof (n) == 'number' || typeof (n) == 'bigint' || n instanceof math.BigNumber));
 
 // Cast a number to Meters
 math.toMeters = (n) => new Meters(n);

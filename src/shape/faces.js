@@ -4,16 +4,14 @@ import { add, toMeters } from 'utils/math';
 // Import the required shape modules
 import { Face } from 'shape/face';
 
-// Import the required shape utilities
-import { Triangulator } from 'shape/utils/triangulator';
-import { Facewinder } from 'shape/utils/facewinder';
-
-// Import the core mesh module
-import { Mesh } from 'mesh/mesh';
-
 // Import the required utilities
-import { Watcher } from 'utils/watcher';
-import { Validator } from 'utils/validator';
+import { Facewinder } from 'utils/facewinder';
+
+// Import the triangulator utility
+// import { Triangulator } from '@oneisland/triangulator';
+
+// Import the validator utility
+import { Validator } from '@oneisland/validator';
 
 // Define a validator for the class
 const { validate } = new Validator('Faces');
@@ -25,10 +23,7 @@ export class Faces extends Array {
   constructor(faces, mesh = null) {
 
     // Throw an error if the mesh in not a Mesh
-    validate({ mesh, Mesh });
-
-    // Create a list of triangulated faces
-    const triangulatedFaces = [];
+    validate({ mesh }, 'Mesh');
 
     // Iterate through each of the faces
     for (const face of faces) {
@@ -37,21 +32,24 @@ export class Faces extends Array {
       if (face.length == 3) {
         
         // Map the current face to a Face and push to the triangulated faces
-        triangulatedFaces.push(new Face(face, mesh));
+        mesh.faces.push(new Face(face, mesh));
+      
+      // Throw an error as triangulation isn't yet supported
+      } else {
 
-        // Skip to the next face
-        continue;
+        // Throw an error
+        throw new Error('Face triangulation is not yet supported - faces must only contain three points');
+
+        // // Triangulate the current face
+        // const triangulator = new Triangulator(face, mesh);
+
+        // // Map the triangulated faces to Faces and push them to the triangulated faces
+        // triangulator.addToMesh(mesh);
       }
-
-      // Triangulate the current face
-      const triangulator = new Triangulator(face, mesh);
-
-      // Map the triangulated faces to Faces and push them to the triangulated faces
-      triangulatedFaces.push(...triangulator.toFaces(mesh));
     }
 
     // Bind the triangulated faces to the class
-    super(...triangulatedFaces);
+    super(...mesh.faces);
 
     // Define the reference to the mesh
     this.mesh = mesh;
@@ -76,13 +74,13 @@ export class Faces extends Array {
   computeNormals() {
 
     // Perform facewinding to ensure the faces normals point outwards
-    const { faces } = new Facewinder(this);
-
+    new Facewinder(this.mesh);
   }
 
   // Cast the faces to a string
   toString() {
 
-    return JSON.stringify(this.map(f => f.toString()));
+    // Return the stringified faces
+    return JSON.stringify(this);
   }
 }

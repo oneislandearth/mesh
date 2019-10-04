@@ -10,8 +10,8 @@ import { Angle } from 'geometry/utils/angle';
 import { Direction } from 'geometry/utils/direction';
 import { Quaternion } from 'geometry/utils/quaternion';
 
-// Import the required utilities
-import { Validator } from 'utils/validator';
+// Import the validator utility
+import { Validator } from '@oneisland/validator';
 
 // Define a validator for the class
 const { validate } = new Validator('Point');
@@ -22,17 +22,19 @@ export class Point extends Vector {
   // Bind the x, y and z coordinates
   constructor([x, y, z]) {
 
-    // Throw an error if the x value is not a Number
-    validate({ x, Number });
-
-    // Throw an error if the y value is not a Number
-    validate({ y, Number });
-    
-    // Throw an error if the z value is not a Number
-    validate({ z, Number });
+    // Throw an error if the x, y or z value is not a Number
+    validate({ x, y, z }, 'Number');
+  
 
     // Call the super function to bind our coodinates to the array
     super([x, y, z]);
+  }
+
+  // Define the species
+  get species() {
+    
+    // Define the species as 'Point'
+    return 'Point';
   }
 
   // Define the species to be an array
@@ -44,10 +46,10 @@ export class Point extends Vector {
   rotate({ angle, direction }) {
 
     // Throw an error if the angle is not an Angle
-    validate({ angle, Angle });
+    validate({ angle }, 'Angle');
 
     // Throw an error if the direction is not a Direction
-    validate({ direction, Direction });
+    validate({ direction }, 'Direction');
 
     // Cast the current point into a vector
     let vector = this.toVector();
@@ -69,7 +71,7 @@ export class Point extends Vector {
   angleBetweenPoint(point) {
 
     // Throw an error if point is not a Point
-    validate({ point, Point });
+    validate({ point }, 'Point');
 
     // Calculate the angle between the points
     const angle = acos(divide(dot([this.x, this.y, this.z], point), multiply(norm([this.x, this.y, this.z]), norm(point))));
@@ -82,7 +84,7 @@ export class Point extends Vector {
   projectToPlane(plane) {
 
     // Throw an error if plane is not a Plane
-    validate({ plane, Plane });
+    validate({ plane }, 'Plane');
 
     // Find the distance the between the point and the plane
     const distance = dot(plane.normal, [this.x, this.y, this.z]);
