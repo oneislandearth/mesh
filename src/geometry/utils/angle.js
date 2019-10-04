@@ -1,5 +1,5 @@
 // Import the required math functions
-import { radians, degrees } from 'utils/math';
+import { radians, degrees } from '@oneisland/math';
 
 // Import the validator utility
 import { Validator } from '@oneisland/validator';

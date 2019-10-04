@@ -2,7 +2,7 @@
 import test from 'ava';
 
 // Import the required math functions
-import { pi } from 'lib/utils/math';
+import { pi } from '@oneisland/math';
 
 // Import the Angle class
 import { Angle } from 'lib/geometry/utils/angle';

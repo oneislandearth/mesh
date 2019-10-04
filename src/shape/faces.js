@@ -1,5 +1,5 @@
 // Import the required math functions
-import { add, toMeters } from 'utils/math';
+import { add, toMeters } from '@oneisland/math';
 
 // Import the required shape modules
 import { Face } from 'shape/face';

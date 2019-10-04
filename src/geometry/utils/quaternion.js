@@ -1,5 +1,5 @@
 // Import the required math functions
-import { cos, divide, sin, multiply, subtract, add, dot, cross } from 'utils/math';
+import { cos, divide, sin, multiply, subtract, add, dot, cross } from '@oneisland/math';
 
 // Import the require geometry modules
 import { Vector } from 'geometry/vector';

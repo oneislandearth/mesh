@@ -1,5 +1,5 @@
 // Import the required math functions
-import { distance, subtract, multiply, toMeters } from 'utils/math';
+import { distance, subtract, multiply, toMeters } from '@oneisland/math';
 
 // Import the required geometry modules
 import { Line } from 'geometry/line';

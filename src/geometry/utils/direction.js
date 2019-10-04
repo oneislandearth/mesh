@@ -1,5 +1,5 @@
 // Import the required math functions
-import { unit } from 'utils/math';
+import { unit } from '@oneisland/math';
 
 // Import the Vector class
 import { Vector } from 'geometry/vector';

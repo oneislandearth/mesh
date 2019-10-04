@@ -1,5 +1,5 @@
 // Import the required classes
-const { phi } = require('../lib/utils/math');
+const { phi } = require('@oneisland/math');
 const { Mesh } = require('../lib');
 
 // Create an icosahedron mesh

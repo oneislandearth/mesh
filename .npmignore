@@ -1,2 +1,7 @@
-# Ignore the source folder in the package
+# Ignore the development files when on NPM
 src
+tests
+.babelrc.js
+.eslint*
+.travis.yml
+jsconfig.json

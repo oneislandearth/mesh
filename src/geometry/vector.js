@@ -1,5 +1,5 @@
 // Import the required math functions
-import { norm } from 'utils/math';
+import { norm } from '@oneisland/math';
 
 // Import the validator utility
 import { Validator } from '@oneisland/validator';

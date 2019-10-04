@@ -1,5 +1,5 @@
 // Import the required math functions
-import { acos, divide, dot, multiply, norm, subtract } from 'utils/math';
+import { acos, divide, dot, multiply, norm, subtract } from '@oneisland/math';
 
 // Import the required geometry modules
 import { Vector } from 'geometry/vector';
