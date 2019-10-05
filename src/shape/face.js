@@ -11,6 +11,9 @@ import { Direction } from 'geometry/utils/direction';
 // Import the required shape modules
 import { Edge } from 'shape/edge';
 
+// Imoprt point in polygon function
+import {pointInsideTetrahedron} from 'point_inside_tetrahedron.js';
+
 // Import the validator utility
 import { Validator } from '@oneisland/validator';
 
@@ -193,6 +196,132 @@ export class Face extends Array {
     // Return null if there is no face / face index, or return the face
     return (~faceIndex) ? this.mesh.faces[faceIndex] : null;
   }
+
+
+
+// Updated dihedrals method for the mesh​
+
+dihedrals() {
+
+​
+
+​
+
+  // This array will contain three sub arrays (one for each connected face if it exists, if not it will return false), 
+
+  // with the sub arrays containing two values, the dihedral angle and if the edge is a valley or a ridge. A valley is 
+
+  // where the two faces bend towards each other, like \/, and a ridge is where they bend away from each other, like /\.
+
+  // This becomes important as when creating the struts one needs to tell the difference in order to keep the strut width 
+
+  // the same, otherwise creating a valley as a ridge will cause the struts to be wider, or even incorrect. 
+
+​
+
+  // Dihedral must not go below 27 degrees for a 2x4 strut
+
+​
+
+  let dihedrals = [];
+
+​
+
+  // The adjacent faces of the original face
+
+​
+
+  const adjfaces = this.adjacentFaces();
+
+​
+
+  const e = this.normal;
+
+​
+
+  // Iterates through each adjacent face, if it exists, and updates the dihedral and it's type
+
+​
+
+  for (let adjfac of adjfaces) {
+
+    // Checks the face exists, if so proceed
+
+    if (!adjfac) {
+
+      // Gives the normal for the adjacent face
+
+      const f = adjfac.normal;
+
+​
+
+      // Finds the angle between their normals
+
+      const angle = acos(divide(dot(e, f), multiply(norm(e), norm(f))));
+
+​
+
+      // Finds the dihedral angle (interior angle)
+
+      const dihedral = divide(subtract(pi, angle), 2);
+
+​
+
+      // Creates a test point to see if the normal direction is inside or outside the tetrahedron formed by the two faces
+
+      // Note: assumes face winding has already been performed.
+
+​
+
+      const testpoint = multiply(2*epsilon, f);
+
+​
+
+      // Finds the four points that make up the tetrahedron
+
+​
+
+      let tetrahedron = this.vertices;
+
+​
+
+      for (const point of adjfac) {
+
+        if ((point != this.a) && (point != this.b) && (point != face.c)) {
+
+          tetrahedron.push(point);
+
+        }
+
+      }
+
+​
+
+      // If the testpoint is in the tetrahedron, then it returns the dihedral and 'valley', else it returns the 
+
+      // dihedral and 'ridge'
+
+​
+
+      pointInsideTetrahedron(tetrahedron, testpoint) ? dihedrals.push([dihedral, 'valley']) : dihedrals.push([dihedral, 'ridge']);
+
+​
+
+    }
+
+    else {
+
+      //If there is no attached face we say that the dihedral is flat, so 180
+
+      dihedrals.push([pi, null]);
+
+    }
+
+  }
+
+}
+
+
 
   // Update the indices in the face
   update([a, b, c]) {
