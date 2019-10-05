@@ -12,7 +12,7 @@ import { Direction } from 'geometry/utils/direction';
 import { Edge } from 'shape/edge';
 
 // Imoprt point in polygon function
-import { pointInsideTetrahedron } from 'point_inside_tetrahedron.js';
+// import { pointInsideTetrahedron } from 'point_inside_tetrahedron.js';
 
 // Import the validator utility
 import { Validator } from '@oneisland/validator';
@@ -195,6 +195,59 @@ export class Face extends Array {
 
     // Return null if there is no face / face index, or return the face
     return (~faceIndex) ? this.mesh.faces[faceIndex] : null;
+  }
+
+  // Find the face a specific distance above
+  above(distance) {
+
+    // Throw an error if tdistance is not a Number
+    validate({ distance }, 'Number');
+
+    // Create a list of planes (face, faceAB, faceBC, faceCA)
+    const planes = [this.plane.clone(), ...this.adjacentFaces.map(face => ((face) ? face.plane.clone() : null))];
+
+    // Scale each of the planes by the distance
+    for (const i in planes) {
+
+      // Check if there is a plane and scale it by the distance
+      if (planes[i]) planes[i].scale(distance);
+    }
+
+    // Find the index of the non-existing adjacent face if there is one
+    const missingAdjacentIndex = this.adjacentFaces.findIndex(v => v === null);
+
+    // Check if there is a missing face
+    if (~missingAdjacentIndex) {
+
+      // Define which vertex from the edge to use based on which adjacent face is missing (0, 1, 2 == 2, 1, 0)
+      const vertexIndex = (missingAdjacentIndex == 0) ? 2 : (missingAdjacentIndex == 2) ? 0 : missingAdjacentIndex;
+
+      // Creates a new plane that is parallel to the xz plane and contains one point of the edge
+      this.planes[missingAdjacentIndex] = new Plane({
+        
+        // Calculate the normal
+        normal: new Direction([0, 1, 0]), 
+        
+        // Calculate the scalar based on the edge
+        scalar: dot([0, 1, 0], this.vertices[vertexIndex])
+      });
+    }
+
+    // Extract each of the planes
+    const [planeFace, planeFaceAB, planeFaceBC, planeFaceCA] = planes;
+
+    // Finds the three lines of intersection between the original face and the three planes
+    const lineAB = planeFace.lineOfIntersectionWith(planeFaceAB);
+    const lineBC = planeFace.lineOfIntersectionWith(planeFaceBC);
+    const lineCA = planeFace.lineOfIntersectionWith(planeFaceCA);
+
+    // Finds the three points of intersection between the three lines
+    const pointA = lineAB.pointOfIntersectionWith(lineCA);
+    const pointB = lineAB.pointOfIntersectionWith(lineBC);
+    const pointC = lineBC.pointOfIntersectionWith(lineCA);
+
+    // Return three points
+    return [pointA, pointB, pointC];
   }
   
   // Updated dihedrals method for the mesh
