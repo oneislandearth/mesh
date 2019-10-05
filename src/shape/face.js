@@ -193,18 +193,13 @@ export class Face extends Array {
     // Return null if there is no face / face index, or return the face
     return (~faceIndex) ? this.mesh.faces[faceIndex] : null;
   }
+  
 
   // Update the indices in the face
   update([a, b, c]) {
 
-    // Throw an error if a is not a Number
-    // validate(a, 'Number');
-
-    // Throw an error if b is not a Number
-    // validate({ b, Number });
-
-    // Throw an error if c is not a Number
-    // validate({ c, Number });
+    // Throw an error if a, b or c is not a Number
+    validate({ a, b, c }, 'Number');
 
     // Update the indices
     this[0] = a;
