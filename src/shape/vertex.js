@@ -64,17 +64,12 @@ export class Vertex extends Point {
     ({ vector } = rotationQuaterion.multiply(vectorQuaterion));
 
     // Update the vector with the rotated vector
-    [this.x, this.y, this.z] = vector;
+    this.update(vector);
   }
 
   // Cast the Vertex to a Point
   toPoint() {
 
-    // Return a new Point
-    return new Point([this.x, this.y, this.z]);
-  }
-
-  get point() {
     // Return a new Point
     return new Point([this.x, this.y, this.z]);
   }

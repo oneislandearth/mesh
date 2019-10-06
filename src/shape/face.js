@@ -1,5 +1,5 @@
 // Import the required math functions
-import { divide, add, subtract, norm, cross, dot, toMeters, epsilon, pi, acos, multiply } from '@oneisland/math';
+import { divide, add, subtract, norm, cross, dot, toMeters, epsilon, pi, acos, multiply, unit } from '@oneisland/math';
 
 // Import the required geometry modules
 import { Plane } from 'geometry/plane';
@@ -198,9 +198,9 @@ export class Face extends Array {
   }
 
   // Find the face a specific distance above
-  above(distance) {
+  pointsAbove(distance) {
 
-    // Throw an error if tdistance is not a Number
+    // Throw an error if distance is not a Number
     validate({ distance }, 'Number');
 
     // Create a list of planes (face, faceAB, faceBC, faceCA)
@@ -223,7 +223,7 @@ export class Face extends Array {
       const vertexIndex = (missingAdjacentIndex == 0) ? 2 : (missingAdjacentIndex == 2) ? 0 : missingAdjacentIndex;
 
       // Creates a new plane that is parallel to the xz plane and contains one point of the edge
-      this.planes[missingAdjacentIndex] = new Plane({
+      planes[1 + missingAdjacentIndex] = new Plane({
         
         // Calculate the normal
         normal: new Direction([0, 1, 0]), 
@@ -242,11 +242,11 @@ export class Face extends Array {
     const lineCA = planeFace.lineOfIntersectionWith(planeFaceCA);
 
     // Finds the three points of intersection between the three lines
-    const pointA = lineAB.pointOfIntersectionWith(lineCA);
-    const pointB = lineAB.pointOfIntersectionWith(lineBC);
-    const pointC = lineBC.pointOfIntersectionWith(lineCA);
+    const pointA = lineAB.pointOfIntersectionWithLine(lineCA);
+    const pointB = lineAB.pointOfIntersectionWithLine(lineBC);
+    const pointC = lineBC.pointOfIntersectionWithLine(lineCA);
 
-    // Return three points
+    // Return three points above
     return [pointA, pointB, pointC];
   }
   
@@ -287,11 +287,11 @@ export class Face extends Array {
 
         // If the testpoint is in the tetrahedron, then it returns the dihedral and 'valley', else it returns the 
         // dihedral and 'ridge'
-        pointInsideTetrahedron(tetrahedron, testpoint) ? dihedrals.push([dihedral, 'valley']) : dihedrals.push([dihedral, 'ridge']);
+        // pointInsideTetrahedron(tetrahedron, testpoint) ? dihedrals.push([dihedral, 'valley']) : dihedrals.push([dihedral, 'ridge']);
 
       } else {
 
-        // If there is no attached face we say that the dihedral is flat, so 180
+        // Add the flat dihedral (180 deg) as there is no adjacent face
         dihedrals.push([pi, null]);
       }
     }

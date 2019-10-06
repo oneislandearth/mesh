@@ -17,26 +17,8 @@ export class Polygon extends Array {
   // Create a new polygon from a number of points
   constructor(points) {
 
-    // Check that the polygon contains three or more points
-    // const equals = (points) => (points.length > 2);
-
-    // Throw an error if there are less than three points
-    // validate({ points, equals, expects: `"points" to contain at least three points` });
-
-    // Check all of the points are valid
-    // for (const point of points) {
-
-    //   // // Cast to a Point if there is a 'toPoint' function on the point (must be a vertex)
-    //   // if (points[i].toPoint) points[i] = points[i].toPoint();
-
-    //   // Throw an error if the point is not a Point
-    //   validate({ point, Point, expects: `"points" to be an array of Point instances` });
-    // }
-
     // Check the polygon contains three or more points
     validate({ points }, (p) => p.length > 2, `"points" to contain at least three points`);
-
-    // Console.log(points[0].species);
 
     // Check that the points are all points
     validateAll({ points }, ['Point', 'Vertex'], `"points" to be an array of Point instances`);

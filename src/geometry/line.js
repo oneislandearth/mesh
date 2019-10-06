@@ -1,5 +1,5 @@
 // Import the required math functions
-import { add, multiply, cross, subtract, divide, dot } from '@oneisland/math';
+import { add, multiply, cross, subtract, divide, dot, norm } from '@oneisland/math';
 
 // Import the required geometry modules
 import { Point } from 'geometry/point';
@@ -107,14 +107,20 @@ export class Line {
     // Throw an error if line is not a Line
     validate({ line }, 'Line');
 
+    // Calculate the cross product of the direction
+    const crossDirection = cross(line.direction, this.direction);
+
+    // Calculate the cross product of the distance
+    const crossDistance = cross(line.direction, subtract(this.point, line.point));
+
     // Return if there is no intersection between the two lines
-    if (cross(line.direction, subtract(this.point, line.point)) || cross(line.direction, this.direction)) return null;    
+    if (!norm(crossDistance) || !norm(crossDirection)) return null;    
 
     // Vector of distance to the intersection
-    const distance = multiply(divide(cross(line.direction, subtract(this.point, line.point)), cross(line.direction, this.direction)), this.direction);
+    const distance = multiply(divide(norm(crossDistance), norm(crossDirection)), this.direction);
 
     // Check whether the point is in front or behind the point on a line 
-    const front = (dot(cross(line.direction, subtract(line.direction, line.point)), cross(line.direction, this.direction)) > 0);
+    const front = (dot(cross(line.direction, subtract(line.direction, line.point)), crossDirection) > 0);
 
     // Calculate the point of intersection based on whether the point is in front or not
     const intersection = (front) ? add(this.point, distance) : subtract(this.point, distance);

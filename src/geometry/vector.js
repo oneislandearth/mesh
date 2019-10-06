@@ -81,6 +81,18 @@ export class Vector extends Array {
     return norm(this);
   }
 
+  // Update the vertices on a vector
+  update([x, y, z]) {
+
+    // Throw an error if x, y, or z is not a Number
+    validate({ x, y, z }, 'Number');
+  
+    // Update the vector
+    this[0] = x;
+    this[1] = y;
+    this[2] = z;
+  }
+
   // Cast the vector to a string
   toString() {
     

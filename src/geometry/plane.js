@@ -1,5 +1,5 @@
 // Import the required math functions
-import { cross, dot, add, multiply, divide, subtract, epsilon } from '@oneisland/math';
+import { cross, dot, add, multiply, divide, subtract, epsilon, norm } from '@oneisland/math';
 
 // Import the required geometry modules
 import { Line } from 'geometry/line';
@@ -55,6 +55,13 @@ export class Plane {
     return new Plane({ normal, scalar });
   }
 
+  // Clone the current plane
+  clone() {
+
+    // Return a clone of the plane
+    return new Plane({ normal: this.normal, scalar: this.scalar });
+  }
+
   // Flip the current plane
   flip() {
 
@@ -70,6 +77,7 @@ export class Plane {
     validate({ distance }, 'Number');
 
     // Scale the plane by a distance
+    // this.scalar = add(this.scalar, multiply(distance, norm(this.normal)));
     this.scalar = add(this.scalar, distance);
   }
 
