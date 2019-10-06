@@ -12,7 +12,7 @@ import { Direction } from 'geometry/utils/direction';
 import { Edge } from 'shape/edge';
 
 // Imoprt point in polygon function
-// import { pointInsideTetrahedron } from 'point_inside_tetrahedron.js';
+// Import { pointInsideTetrahedron } from 'point_inside_tetrahedron.js';
 
 // Import the validator utility
 import { Validator } from '@oneisland/validator';
@@ -97,7 +97,7 @@ export class Face extends Array {
     if (!this.mesh) throw new Error(`Cannot compute the face plane - the face is not bound to a Mesh`);
 
     // Calculate the normal of the Plane
-    const normal = new Direction(cross(subtract(this.b, this.a), subtract(this.c, this.a)));
+    const normal = new Direction(cross(subtract(this.a, this.b), subtract(this.c, this.b)));
 
     // Calculate the scalar of the Plane
     const scalar = dot(normal, this.a);
@@ -243,8 +243,8 @@ export class Face extends Array {
 
     // Finds the three points of intersection between the three lines
     const pointA = lineAB.pointOfIntersectionWithLine(lineCA);
-    const pointB = lineAB.pointOfIntersectionWithLine(lineBC);
-    const pointC = lineBC.pointOfIntersectionWithLine(lineCA);
+    const pointB = lineBC.pointOfIntersectionWithLine(lineAB);
+    const pointC = lineCA.pointOfIntersectionWithLine(lineBC);
 
     // Return three points above
     return [pointA, pointB, pointC];
@@ -254,10 +254,10 @@ export class Face extends Array {
   dihedrals() {
 
     // This array will contain three sub arrays (one for each connected face if it exists, if not it will return false),
-    // with the sub arrays containing two values, the dihedral angle and if the edge is a valley or a ridge. A valley is
-    // where the two faces bend towards each other, like \/, and a ridge is where they bend away from each other, like /\.
+    // With the sub arrays containing two values, the dihedral angle and if the edge is a valley or a ridge. A valley is
+    // Where the two faces bend towards each other, like \/, and a ridge is where they bend away from each other, like /\.
     // This becomes important as when creating the struts one needs to tell the difference in order to keep the strut width
-    // the same, otherwise creating a valley as a ridge will cause the struts to be wider, or even incorrect.
+    // The same, otherwise creating a valley as a ridge will cause the struts to be wider, or even incorrect.
     // Dihedral must not go below 27 degrees for a 2x4 strut
 
     const dihedrals = [];
@@ -286,8 +286,8 @@ export class Face extends Array {
         }
 
         // If the testpoint is in the tetrahedron, then it returns the dihedral and 'valley', else it returns the 
-        // dihedral and 'ridge'
-        // pointInsideTetrahedron(tetrahedron, testpoint) ? dihedrals.push([dihedral, 'valley']) : dihedrals.push([dihedral, 'ridge']);
+        // Dihedral and 'ridge'
+        // PointInsideTetrahedron(tetrahedron, testpoint) ? dihedrals.push([dihedral, 'valley']) : dihedrals.push([dihedral, 'ridge']);
 
       } else {
 
@@ -344,7 +344,7 @@ export class Face extends Array {
   contains(vertex) {
 
     // Throw an error if vertex is not a Vertex
-    // validate({ vertex, Vertex });
+    // Validate({ vertex, Vertex });
 
     // Find the vertex within the face
     const match = this.vertices.filter(v => v.toString() == vertex.toString());

@@ -120,7 +120,7 @@ export class Line {
     const distance = multiply(divide(norm(crossDistance), norm(crossDirection)), this.direction);
 
     // Check whether the point is in front or behind the point on a line 
-    const front = (dot(cross(line.direction, subtract(line.direction, line.point)), crossDirection) > 0);
+    const front = (dot(crossDistance, crossDirection) > 0);
 
     // Calculate the point of intersection based on whether the point is in front or not
     const intersection = (front) ? add(this.point, distance) : subtract(this.point, distance);
