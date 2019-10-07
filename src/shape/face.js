@@ -237,21 +237,26 @@ export class Face extends Array {
     const [planeFace, planeFaceAB, planeFaceBC, planeFaceCA] = planes;
 
     // Finds the three lines of intersection between the original face and the three planes
-    const lineAB = planeFace.lineOfIntersectionWith(planeFaceAB);
-    const lineBC = planeFace.lineOfIntersectionWith(planeFaceBC);
-    const lineCA = planeFace.lineOfIntersectionWith(planeFaceCA);
+    // const lineAB = planeFace.lineOfIntersectionWith(planeFaceAB);
+    // const lineBC = planeFace.lineOfIntersectionWith(planeFaceBC);
+    // const lineCA = planeFace.lineOfIntersectionWith(planeFaceCA);
 
     // Finds the three points of intersection between the three lines
-    const pointA = lineAB.pointOfIntersectionWithLine(lineCA);
-    const pointB = lineBC.pointOfIntersectionWithLine(lineAB);
-    const pointC = lineCA.pointOfIntersectionWithLine(lineBC);
+    // const pointA = lineAB.pointOfIntersectionWithLine(lineCA);
+    // const pointB = lineBC.pointOfIntersectionWithLine(lineAB);
+    // const pointC = lineCA.pointOfIntersectionWithLine(lineBC);
+
+    // Find the point of intersection between three faces
+    const pointA = planeFace.pointOfIntersectionWithPlanes(planeFaceAB, planeFaceCA);
+    const pointB = planeFace.pointOfIntersectionWithPlanes(planeFaceAB, planeFaceBC);
+    const pointC = planeFace.pointOfIntersectionWithPlanes(planeFaceBC, planeFaceCA);
 
     // Return three points above
     return [pointA, pointB, pointC];
   }
   
   // Updated dihedrals method for the mesh
-  dihedrals() {
+  get dihedrals() {
 
     // This array will contain three sub arrays (one for each connected face if it exists, if not it will return false),
     // With the sub arrays containing two values, the dihedral angle and if the edge is a valley or a ridge. A valley is
@@ -265,8 +270,11 @@ export class Face extends Array {
     // Iterates through each adjacent face, if it exists, and updates the dihedral and it's type
     for (const adjacentFace of this.adjacentFaces) {
 
+      // Extract the adjacent face
+      // const adjacentFace = this.adjacentFaces[i];
+
       // Checks the face exists, if so proceed
-      if (!adjacentFace) {
+      if (adjacentFace) {
 
         // Finds the angle between their normals
         const angle = acos(divide(dot(this.normal, adjacentFace.normal), multiply(norm(this.normal), norm(adjacentFace.normal))));
@@ -274,25 +282,33 @@ export class Face extends Array {
         // Finds the dihedral angle (interior angle)
         const dihedral = divide(subtract(pi, angle), 2);
 
-        // Creates a test point to see if the normal direction is inside or outside the tetrahedron formed by the two faces
-        // Note: assumes face winding has already been performed.
-        const testpoint = multiply(multiply(epsilon, 2), adjacentFace.normal);
+        // // Creates a test point to see if the normal direction is inside or outside the tetrahedron formed by the two faces
+        // // Note: assumes face winding has already been performed.
+        // const testpoint = multiply(multiply(epsilon, 2), adjacentFace.normal);
 
-        // Finds the four points that make up the tetrahedron
-        const tetrahedron = this.vertices;
+        // // Finds the four points that make up the tetrahedron
+        // const tetrahedron = this.vertices;
 
-        for (const point of adjacentFace) {
-          if ((point != this.a) && (point != this.b) && (point != this.c)) tetrahedron.push(point);
-        }
+        // // Iterate through each of the points in the adjacent face
+        // for (const point of adjacentFace) {
 
-        // If the testpoint is in the tetrahedron, then it returns the dihedral and 'valley', else it returns the 
-        // Dihedral and 'ridge'
+        //   // Check that the point is not in the face and add it to the tetrahedron
+        //   if (!this.contains(point)) tetrahedron.push(point);
+        // }
+
+        // Create a tetrahedron from the points
+
+
+        // If the testpoint is in the tetrahedron, then it returns the dihedral and 'valley', else it returns the dihedral and 'ridge'
         // PointInsideTetrahedron(tetrahedron, testpoint) ? dihedrals.push([dihedral, 'valley']) : dihedrals.push([dihedral, 'ridge']);
+
+        // Add the dihedrals
+        dihedrals.push({ angle: dihedral, type: 'ridge' });
 
       } else {
 
         // Add the flat dihedral (180 deg) as there is no adjacent face
-        dihedrals.push([pi, null]);
+        dihedrals.push({ angle: pi, type: null });
       }
     }
 

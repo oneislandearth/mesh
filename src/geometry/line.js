@@ -1,5 +1,5 @@
 // Import the required math functions
-import { add, multiply, cross, subtract, divide, dot, norm } from '@oneisland/math';
+import { add, multiply, cross, subtract, divide, dot, norm, isZeroes } from '@oneisland/math';
 
 // Import the required geometry modules
 import { Point } from 'geometry/point';
@@ -21,7 +21,7 @@ export class Line {
   constructor({ point, direction }) {
 
     // Throw an error if the point is not a Point
-    validate({ point }, 'Point');
+    validate({ point }, ['Point', 'Vertex']);
 
     // Throw an error if the direction is not a Direction
     validate({ direction }, 'Direction');
@@ -42,7 +42,7 @@ export class Line {
   static fromPoints([a, b]) {
 
     // Throw an error if a or b is not a Point
-    validate({ a, b }, 'Point');
+    validate({ a, b }, ['Point', 'Vertex']);
 
     // Return the new Line
     return new Line({
@@ -114,7 +114,7 @@ export class Line {
     const crossDistance = cross(line.direction, subtract(this.point, line.point));
 
     // Return if there is no intersection between the two lines
-    if (!norm(crossDistance) || !norm(crossDirection)) return null;    
+    if (isZeroes(crossDistance) || isZeroes(crossDirection)) return null;    
 
     // Vector of distance to the intersection
     const distance = multiply(divide(norm(crossDistance), norm(crossDirection)), this.direction);

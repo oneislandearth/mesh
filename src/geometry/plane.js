@@ -1,5 +1,5 @@
 // Import the required math functions
-import { cross, dot, add, multiply, divide, subtract, epsilon, norm } from '@oneisland/math';
+import { cross, dot, add, multiply, divide, subtract, epsilon, norm, det, transpose, isZeroes } from '@oneisland/math';
 
 // Import the required geometry modules
 import { Line } from 'geometry/line';
@@ -102,7 +102,7 @@ export class Plane {
     const direction = cross(n1, n2);
 
     // Return if the planes are parallel as there is no intersection
-    if (direction == 0) return null;
+    if (isZeroes(direction)) return null;
 
     // C1 and C2 are two constants that form the first point of the line
     const c1 = divide(subtract(s1, multiply(s2, dot(n1, n2))), subtract(1, multiply(dot(n1, n2), dot(n1, n2))));
@@ -120,5 +120,46 @@ export class Plane {
       // Add the direction
       direction: new Direction(direction)
     });
+  }
+
+  // Calculate the point of intersection with two planes
+  pointOfIntersectionWithPlanes(plane1, plane2) {
+
+    // Throw an error if plane1 and plane2 are not a Plane
+    validate({ plane1, plane2 }, 'Plane');
+
+    // Extract the normal and scalar values from the planes
+    const [n1, s1] = [this.normal, this.scalar];
+    const [n2, s2] = [plane1.normal, plane1.scalar];
+    const [n3, s3] = [plane2.normal, plane2.scalar];
+
+    // Calculate the determinant of the normals from the planes
+    const determinant = det(transpose([n1, n2, n3]));
+
+    // Check if there no intersection and if so return false
+    if (isZeroes(determinant)) return null;
+
+    // Calculate the point of intersection from the planes
+    const intersection = divide(add(multiply(s1, cross(n2, n3)), add(multiply(s2, cross(n3, n1)), multiply(s3, cross(n1, n2)))), determinant);
+    
+    // Return the point of intersection
+    return new Point(intersection);
+  }
+
+  // Check if two planes are the same
+  equals(plane) {
+
+    // Throw an error if the plane is not a Plane
+    validate({ plane }, 'Plane');
+
+    // Return whether or not the planes are the same
+    return (this.toString() == plane.toString());
+  }
+
+  // Cast the plane to a string
+  toString() {
+
+    // Cast the plane to a string [norm(x), norm(y), norm(z), scalar]
+    return JSON.stringify([...this.normal, this.scalar]);
   }
 }
