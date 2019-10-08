@@ -307,8 +307,17 @@ export class Face extends Array {
 
       } else {
 
-        // Add the flat dihedral (180 deg) as there is no adjacent face
-        dihedrals.push({ angle: pi, type: null });
+        // The projected normal of the face, projected onto the xz axis
+        const projectedNormal = [this.normal[0], 0, this.normal[2]];
+
+        // Find the angle between the two planes
+        const angle = acos(divide(dot(projectedNormal, this.normal), multiply(norm(projectedNormal), norm(this.normal))));
+
+        // Finds the dihedral from the angle
+        const dihedral = divide(subtract(pi, angle), 2);
+
+        // Add the flat dihedral for the bottom struts
+        dihedrals.push({ angle: dihedral, type: null });
       }
     }
 
