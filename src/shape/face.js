@@ -255,7 +255,7 @@ export class Face extends Array {
     return [pointA, pointB, pointC];
   }
   
-  // Updated dihedrals method for the mesh
+  // Calculate the dihedrals for a face
   get dihedrals() {
 
     // This array will contain three sub arrays (one for each connected face if it exists, if not it will return false),
@@ -323,6 +323,32 @@ export class Face extends Array {
 
     // Return the dihedrals
     return dihedrals;
+  }
+
+  // Calculate the radials for a face
+  get radials() {
+
+    // Create a list of radial angles
+    const radials = [];
+
+    // Iterate through each of the points
+    for (const i in this.vertices) {
+
+      // Define the set of indexes
+      const [i0, i1, i2] = [Number(i), ((Number(i) + 1) % 3), ((Number(i) + 2) % 3)];
+
+      // Multiply the normals (ab, ac)
+      const normals = multiply(norm(subtract(this.vertices[i1], this.vertices[i0])), norm(subtract(this.vertices[i2], this.vertices[i0])));
+
+      // Calculate the radial angle
+      const radial = acos(divide(dot(subtract(this.vertices[i1], this.vertices[i0]), subtract(this.vertices[i2], this.vertices[i0])), normals));
+    
+      // Add the radial angle to the list
+      radials.push(radial);
+    }
+
+    // Return the radials for the face
+    return radials;
   }
 
   // Update the indices in the face
