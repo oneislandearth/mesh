@@ -85,8 +85,8 @@ export class Vector extends Array {
   }
 
   // Cast the vector to a quaternion
-  get Quaternion() {
-    return Quaternion({ scalar: 0, vector: this });
+  get quaternion() {
+    return new Quaternion({ scalar: 0, vector: this });
   }
 
   // Rotate the vector by an angle and direction
@@ -102,7 +102,7 @@ export class Vector extends Array {
     const rotationQuaterion = Quaternion.fromAngleAndDirection({ angle, direction });
 
     // Rotate the vector
-    const { vector } = rotationQuaterion.multiply(this.quaterion);
+    const { vector } = rotationQuaterion.multiply(this.quaternion);
 
     // Return the rotated vector
     return new Vector(vector);
