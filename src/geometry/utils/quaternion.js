@@ -1,18 +1,11 @@
 // Import the required math functions
 import { cos, divide, sin, multiply, subtract, add, dot, cross } from '@oneisland/math';
 
-// Import the require geometry modules
-import { Vector } from 'geometry/vector';
-
-// Import the required geometry utilities
-import { Angle } from 'geometry/utils/angle';
-import { Direction } from 'geometry/utils/direction';
-
 // Import the validator utility
 import { Validator } from '@oneisland/validator';
 
 // Define a validator for the class
-const { validate } = new Validator('Quaternion');
+const { validate, validateArray } = new Validator('Quaternion');
 
 // Calculate a Quaternion from a scalar and vector
 export class Quaternion extends Array {
@@ -23,8 +16,8 @@ export class Quaternion extends Array {
     // Throw an error if the scalar is not a Number
     validate({ scalar }, 'Number');
 
-    // Throw an error if the vector is not a Vector
-    validate({ vector }, 'Vector');
+    // Throw an error if the values in vector are not Number
+    validateArray({ vector }, 'Number');
 
     // Call the super function to bind our coodinates to the array
     super(scalar, ...vector);
@@ -40,8 +33,8 @@ export class Quaternion extends Array {
   // Create a new Quaternion from a Vector
   static fromVector({ vector }) {
 
-    // Throw an error if the vector is not a Vector
-    validate({ vector }, 'Vector');
+    // Throw an error if the values in vector are not Number
+    validateArray({ vector }, 'Number');
 
     // Return the new Quaternion
     return new Quaternion({ scalar: 0, vector });
@@ -63,20 +56,20 @@ export class Quaternion extends Array {
     return new Quaternion({ 
 
       // Calculate the scalar
-      scalar: cos(divide(angle, 2)), 
+      scalar: cos(divide(angle.radians, 2)), 
 
       // Calculate the vector
-      vector: new Vector([
+      vector: [
 
         // Calculate the x value
-        multiply(sin(divide(angle, 2)), x),
+        multiply(sin(divide(angle.radians, 2)), x),
 
         // Calculate the y value
-        multiply(sin(divide(angle, 2)), y),
+        multiply(sin(divide(angle.radians, 2)), y),
 
         // Calculate the z value
-        multiply(sin(divide(angle, 2)), z)
-      ])
+        multiply(sin(divide(angle.radians, 2)), z)
+      ]
     });
 
   }
@@ -102,7 +95,7 @@ export class Quaternion extends Array {
       scalar: subtract(multiply(s1, s2), dot(v1, v2)),
       
       // Calculate the vector
-      vector: new Vector(add(add(multiply(s1, v2), multiply(s2, v1)), cross(v1, v2)))
+      vector: add(add(multiply(s1, v2), multiply(s2, v1)), cross(v1, v2))
     });
   }
 
@@ -114,14 +107,14 @@ export class Quaternion extends Array {
   // Determine the current scalar of the Quaternion
   get scalar() {
 
-    // Return the scalar
+    // Return the scalar part of the quaternion
     return this[0];
   }
 
   // Determine the current vector of the Quaternion
   get vector() {
 
-    // Return the vector
-    return new Vector(this[1], this[2], this[3]);
+    // Return the vector part of the quaternion
+    return [this[1], this[2], this[3]];
   }
 }

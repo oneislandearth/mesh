@@ -55,7 +55,7 @@ export class Mesh {
   get center() {
 
     // Calculate the center of all vertices
-    const point = divide(this.vertices.reduce((sum, { vertices }) => add(sum, vertices), [0, 0, 0]), this.vertices.length);
+    const point = divide(this.vertices.reduce((sum, vertex) => add(sum, vertex), [0, 0, 0]), this.vertices.length);
 
     // Return the center point
     return new Point(point);

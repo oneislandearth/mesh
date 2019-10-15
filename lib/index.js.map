@@ -1,0 +1,1 @@
+{"version":3,"sources":["../src/index.js"],"names":[],"mappings":"qCACA,iC","sourcesContent":["// Import the required components from the package\nimport { Mesh } from 'mesh/mesh';\n\n// Export all the functionality\nexport {\n  Mesh\n};"],"file":"index.js"}

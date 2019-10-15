@@ -42,30 +42,30 @@ export class Point extends Vector {
     return Array; 
   }
 
-  // Rotate the point by an angle and direction
-  rotate({ angle, direction }) {
+  // // Rotate the point by an angle and direction
+  // rotate({ angle, direction }) {
 
-    // Throw an error if the angle is not an Angle
-    validate({ angle }, 'Angle');
+  //   // Throw an error if the angle is not an Angle
+  //   validate({ angle }, 'Angle');
 
-    // Throw an error if the direction is not a Direction
-    validate({ direction }, 'Direction');
+  //   // Throw an error if the direction is not a Direction
+  //   validate({ direction }, 'Direction');
 
-    // Cast the current point into a vector
-    let vector = this.toVector();
+  //   // Cast the current point into a vector
+  //   let vector = this.toVector();
 
-    // Create a quaternion from the vector
-    const vectorQuaterion = Quaternion.fromVector({ vector });
+  //   // Create a quaternion from the vector
+  //   const vectorQuaterion = Quaternion.fromVector({ vector });
 
-    // Create a Quaternion from the angle and direction
-    const rotationQuaterion = Quaternion.fromAngleAndDirection({ angle, direction });
+  //   // Create a Quaternion from the angle and direction
+  //   const rotationQuaterion = Quaternion.fromAngleAndDirection({ angle, direction });
 
-    // Rotate the vector
-    ({ vector } = rotationQuaterion.multiply(vectorQuaterion));
+  //   // Rotate the vector
+  //   ({ vector } = rotationQuaterion.multiply(vectorQuaterion));
 
-    // Update the vector with the rotated vector
-    [this.x, this.y, this.z] = vector;
-  }
+  //   // Update the vector with the rotated vector
+  //   [this.x, this.y, this.z] = vector;
+  // }
 
   // Calculate the angle between two points
   angleBetweenPoint(point) {

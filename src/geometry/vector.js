@@ -1,6 +1,9 @@
 // Import the required math functions
 import { norm } from '@oneisland/math';
 
+// Import the required geometry utilities
+import { Quaternion } from 'geometry/index';
+
 // Import the validator utility
 import { Validator } from '@oneisland/validator';
 
@@ -81,6 +84,46 @@ export class Vector extends Array {
     return norm(this);
   }
 
+  // Cast the vector to a quaternion
+  get Quaternion() {
+    return Quaternion({ scalar: 0, vector: this });
+  }
+
+  // Rotate the vector by an angle and direction
+  rotate({ angle, direction }) {
+
+    // Throw an error if the angle is not an Angle
+    validate({ angle }, 'Angle');
+
+    // Throw an error if the direction is not a Direction
+    validate({ direction }, 'Direction');
+
+    // Create a Quaternion from the angle and direction
+    const rotationQuaterion = Quaternion.fromAngleAndDirection({ angle, direction });
+
+    // Rotate the vector
+    const { vector } = rotationQuaterion.multiply(this.quaterion);
+
+    // Return the rotated vector
+    return new Vector(vector);
+  }
+
+  // Rotate the vector by an angle and direction (in place)
+  rotateInPlace({ angle, direction }) {
+
+    // Throw an error if the angle is not an Angle
+    validate({ angle }, 'Angle');
+
+    // Throw an error if the direction is not a Direction
+    validate({ direction }, 'Direction');
+
+    // Rotate the vector by the angle and direction
+    const vector = this.rotate({ angle, direction });
+
+    // Update the vector with the rotated vector
+    this.update(vector);
+  }
+
   // Update the vertices on a vector
   update([x, y, z]) {
 
@@ -91,6 +134,13 @@ export class Vector extends Array {
     this[0] = x;
     this[1] = y;
     this[2] = z;
+  }
+
+  // Clone a vector
+  clone() {
+
+    // Return the cloned vector
+    return new Vector(this);
   }
 
   // Cast the vector to a string
