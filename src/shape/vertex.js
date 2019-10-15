@@ -8,6 +8,9 @@ import { Quaternion } from 'geometry/utils/quaternion';
 // Import the required utilities
 import { Validator } from '@oneisland/validator';
 
+// Import the required utilities
+import { multiply } from '@oneisland/math';
+
 // Define a validator for the class
 const { validate } = new Validator('Vertex');
 
@@ -43,29 +46,31 @@ export class Vertex extends Point {
   }
 
   // // Rotate the point by an angle and direction
-  // rotate({ angle, direction }) {
 
-  //   // Throw an error if the angle is not an Angle
-  //   validate({ angle }, 'Angle');
+  rotate({ angle, direction }) {
 
-  //   // Throw an error if the direction is not a Direction
-  //   validate({ direction }, 'Direction');
+    // Throw an error if the angle is not an Angle
+    validate({ angle }, 'Angle');
 
-  //   // Cast the current point into a vector
-  //   let vector = this.toVector();
+    // Throw an error if the direction is not a Direction
+    validate({ direction }, 'Direction');
 
-  //   // Create a quaternion from the vector
-  //   const vectorQuaterion = Quaternion.fromVector({ vector });
+    // Create a Quaternion from the angle and direction
+    const rotationQuaterion = Quaternion.fromAngleAndDirection({ angle, direction });
 
-  //   // Create a Quaternion from the angle and direction
-  //   const rotationQuaterion = Quaternion.fromAngleAndDirection({ angle, direction });
+    // Finds the negative of the direction
 
-  //   // Rotate the vector
-  //   ({ vector } = rotationQuaterion.multiply(vectorQuaterion));
+    const negdirec = multiply(-1, direction);
 
-  //   // Update the vector with the rotated vector
-  //   this.update(vector);
-  // }
+    // Create the inverse of the rotation quaternion
+    const inverseRotationQuaterion = Quaternion.fromAngleAndDirection({ angle, negdirec });
+
+    // Rotate the vector
+    const { vector } = (rotationQuaterion.multiply(this.quaternion)).multiply(inverseRotationQuaterion);
+
+    // Return the rotated vector
+    return new Vector(vector);
+  }
 
   // Cast the Vertex to a Point
   toPoint() {
