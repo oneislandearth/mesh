@@ -1,5 +1,5 @@
 // Import the required math functions
-import { cos, divide, sin, multiply, subtract, add, dot, cross } from '@oneisland/math';
+import { cos, divide, sin, multiply, subtract, add, dot, cross, unaryMinus } from '@oneisland/math';
 
 // Import the validator utility
 import { Validator } from '@oneisland/validator';
@@ -97,6 +97,22 @@ export class Quaternion extends Array {
       // Calculate the vector
       vector: add(add(multiply(s1, v2), multiply(s2, v1)), cross(v1, v2))
     });
+  }
+
+  // Rotate a point quaternion by the rotation quaternion
+  rotate(rotationQuaternion) {
+
+    // Throw an error if the rotationQuaternion is not a Quaternion
+    validate({ rotationQuaternion }, 'Quaternion');
+    
+    // Create the inverse of the rotation quaternion
+    const inverseRotationQuaterion = new Quaternion({ scalar: rotationQuaternion.scalar, vector: unaryMinus(rotationQuaternion.vector) });
+
+    // Perform the first multiplication with the rotation quaternion
+    const multipliedQuaternion = rotationQuaternion.multiply(this);
+
+    // Return the rotated quaternion
+    return multipliedQuaternion.multiply(inverseRotationQuaterion);
   }
 
   // Define the species to be an array

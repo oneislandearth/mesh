@@ -102,7 +102,7 @@ export class Vector extends Array {
     const rotationQuaterion = Quaternion.fromAngleAndDirection({ angle, direction });
 
     // Rotate the vector
-    const { vector } = rotationQuaterion.multiply(this.quaternion);
+    const { vector } = this.quaternion.rotate(rotationQuaterion);
 
     // Return the rotated vector
     return new Vector(vector);
@@ -134,6 +134,9 @@ export class Vector extends Array {
     this[0] = x;
     this[1] = y;
     this[2] = z;
+
+    // Return the vector
+    return this;
   }
 
   // Clone a vector

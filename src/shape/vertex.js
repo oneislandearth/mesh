@@ -45,33 +45,6 @@ export class Vertex extends Point {
     return Array; 
   }
 
-  // // Rotate the point by an angle and direction
-
-  rotate({ angle, direction }) {
-
-    // Throw an error if the angle is not an Angle
-    validate({ angle }, 'Angle');
-
-    // Throw an error if the direction is not a Direction
-    validate({ direction }, 'Direction');
-
-    // Create a Quaternion from the angle and direction
-    const rotationQuaterion = Quaternion.fromAngleAndDirection({ angle, direction });
-
-    // Finds the negative of the direction
-
-    const negdirec = multiply(-1, direction);
-
-    // Create the inverse of the rotation quaternion
-    const inverseRotationQuaterion = Quaternion.fromAngleAndDirection({ angle, negdirec });
-
-    // Rotate the vector
-    const { vector } = (rotationQuaterion.multiply(this.quaternion)).multiply(inverseRotationQuaterion);
-
-    // Return the rotated vector
-    return new Vector(vector);
-  }
-
   // Cast the Vertex to a Point
   toPoint() {
 
