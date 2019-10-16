@@ -18,12 +18,12 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@oneisland/math": "0.0.1",
-    "@oneisland/validator": "0.0.2"
+    "@oneisland/math": "^0.0.2",
+    "@oneisland/validator": "^0.0.2"
   },
   "devDependencies": {
-    "@oneisland/babler": "0.0.7",
-    "@oneisland/linter": "0.0.9",
+    "@oneisland/babler": "^0.0.7",
+    "@oneisland/linter": "^0.0.10",
     "ava": "^2.3.0",
     "source-map-support": "^0.5.13"
   },
