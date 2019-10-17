@@ -11,7 +11,7 @@ import { Faces } from 'shape/faces';
 // Create a new mesh from vertices and faces (indices)
 export class Mesh {
 
-  constructor({ vertices, faces }) {
+  constructor({ vertices, faces, label }) {
 
     // Bind an empty array of vertices and faces
     this.vertices = [];
@@ -28,6 +28,9 @@ export class Mesh {
 
     // Compute the correcct vertex normals
     this.vertices.computeNormals();
+
+    // Add the label to the mesh if there is one
+    if (label) this.label = label;
   }
 
   // Define the species
