@@ -25,6 +25,9 @@ export class Mesh {
 
     // Compute the correct face normals
     this.faces.computeNormals();
+
+    // Compute the correcct vertex normals
+    this.vertices.computeNormals();
   }
 
   // Define the species

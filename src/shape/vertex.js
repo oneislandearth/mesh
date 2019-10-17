@@ -2,14 +2,8 @@
 import { Point } from 'geometry/point';
 import { Vector } from 'geometry/vector';
 
-// Import the required geometry utilities
-import { Quaternion } from 'geometry/utils/quaternion';
-
 // Import the required utilities
 import { Validator } from '@oneisland/validator';
-
-// Import the required utilities
-import { multiply } from '@oneisland/math';
 
 // Define a validator for the class
 const { validate } = new Validator('Vertex');
@@ -31,6 +25,9 @@ export class Vertex extends Point {
 
     // Bind the reference to the current mesh if there is one
     this.mesh = mesh;
+
+    // Define the vertex normal
+    this.normal = null;
   }
 
   // Define the species
@@ -43,6 +40,13 @@ export class Vertex extends Point {
   // Define the species to be an array
   static get [Symbol.species]() {
     return Array; 
+  }
+
+  // Update the vertex normal
+  updateNormal(normal) {
+
+    // Update the normal of the vertex
+    this.normal = normal;
   }
 
   // Cast the Vertex to a Point

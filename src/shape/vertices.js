@@ -1,3 +1,6 @@
+// Import the required math function
+import { add, unit } from '@oneisland/math';
+
 // Import the required shape modules
 import { Vertex } from 'shape/vertex';
 
@@ -29,5 +32,26 @@ export class Vertices extends Array {
   // Define the species to be an array
   static get [Symbol.species]() {
     return Array; 
+  }
+
+  // Compute the vertex normals from the face normals
+  computeNormals() {
+
+    // Create an empty list of normals and fill with 0, 0, 0
+    const normals = new Array(this.length).fill([0, 0, 0]);
+
+    // Iterate through each of the faces in the mesh
+    for (const face of this.mesh.faces) {
+
+      // Add the face normal to the vertex normal
+      face.map(index => normals[index] = add(normals[index], face.normal));
+    }
+    
+    // Iterate through each of the vertices
+    for (let i = 0; i < this.length; i++) {
+
+      // Add the normal to the vertex
+      this[i].updateNormal(unit(normals[i]));
+    }
   }
 }

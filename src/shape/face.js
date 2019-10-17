@@ -114,7 +114,14 @@ export class Face extends Array {
 
     // Return the normal for the face
     return this.plane.normal;
-  }  
+  }
+  
+  // Compute the vertex normals
+  get vertexNormals() {
+
+    // Check if the face is bound to a mesh and if not throw an error
+    if (!this.mesh) throw new Error(`Cannot compute the vertex normals of the face - the face is not bound to a Mesh`);
+  }
 
   // Find the edges from the face
   get edges() {
