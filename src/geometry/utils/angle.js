@@ -64,7 +64,7 @@ export class Angle {
   [Symbol.toPrimitive](type) {
 
     // Cast the number to a string and return the angle in degrees
-    if (type == 'string') return `${this.degrees.toFixed(2)}°`;
+    if (type == 'string') return `${Number(this.degrees.toFixed(2))}°`;
     
     // Cast the number to a number
     return Number(this.radians);
