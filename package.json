@@ -18,7 +18,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@oneisland/math": "^0.0.2",
+    "@oneisland/math": "^0.0.3",
     "@oneisland/validator": "^0.0.2"
   },
   "devDependencies": {
