@@ -1,7 +1,7 @@
 {
   "name": "@oneisland/mesh",
   "private": false,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A simple library for creating and working with 3D meshes in Javascript",
   "keywords": [
     "mesh",
@@ -18,7 +18,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@oneisland/math": "^0.0.2",
+    "@oneisland/math": "0.0.4",
     "@oneisland/validator": "^0.0.2"
   },
   "devDependencies": {

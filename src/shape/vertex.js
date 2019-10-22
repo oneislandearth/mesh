@@ -15,7 +15,7 @@ export class Vertex extends Point {
   constructor([x, y, z], mesh = null) {
 
     // Throw an error if the x, y or z value is not a Number
-    validate({ x, y, z }, 'Number');
+    validate({ x, y, z }, 'Number',);
 
     // Throw an error if the mesh in not a Mesh
     validate({ mesh }, 'Mesh');

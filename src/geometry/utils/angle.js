@@ -16,6 +16,9 @@ export class Angle {
     // Check whether the angle is complex number, and select the value in radians
     angle = ((angle.re) ? angle.re : angle);
 
+    // If the angle is an angle extract the angle
+    if (angle.angle) angle = angle;
+
     // Throw an error if the angle is not a Number
     validate({ angle }, 'Number');
 
