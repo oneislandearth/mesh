@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@oneisland/math": "0.0.4",
-    "@oneisland/validator": "^0.0.2"
+    "@oneisland/validator": "^0.0.3"
   },
   "devDependencies": {
     "@oneisland/babler": "^0.0.7",
