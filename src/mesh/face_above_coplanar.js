@@ -7,6 +7,9 @@ pointsAboveCoplanar (height) {
   // Iterate through each vertex in the face
   for (let vertex of face) {
 
+    // Define the a variable that is the point that will be returned
+    let point = [];
+
     // Find the index of the current vertex
     const index = indexOf(vertex);
 
@@ -48,7 +51,7 @@ pointsAboveCoplanar (height) {
     if (((cross(faceNow.normal, faceBefore.normal) > epsilon) && ((cross(face.normal, faceBefore.normal) > epsilon) && ((cross(faceNow.normal, face.normal) > epsilon)) {
 
       // Runs three plane intersection on the three planes
-      const point = threePlaneIntersection(face.plane.normal, face.plane.scalar, faceBefore.plane.normal, faceBefore.plane.scalar, faceNow.plane.normal, faceNow.plane.scalar);
+      point = threePlaneIntersection(face.plane.normal, face.plane.scalar, faceBefore.plane.normal, faceBefore.plane.scalar, faceNow.plane.normal, faceNow.plane.scalar);
 
       // Add point to the updated face, unsure about how to structure this
     }
@@ -126,6 +129,33 @@ pointsAboveCoplanar (height) {
           // move onto the next one in the loop for listofsecondelements
           if (cross(containsVertex[element].normal, containsVertex[el].normal) < (epsilon, epsilon, epsilon)) {continue loop2}
 
+          // We compute the point based on only having two different normals for all the faces that contain the point given.
+          // This corresponds to having a vertex located on an edge, like the edge of a bench. All of the faces that contain
+          // the point either have one normal, for the top of the bench, or another normal, over the edge of the bench, like
+          // in the below diagram.
+          //
+          //
+          //     ^ (first normal)
+          // ----|-----
+          //          |
+          //          | -> (second normal)
+          //          |
+          //          |
+          //
+          // Using trigonometry and the our knowldege of the angle between the normals, the distances above the planes and the 
+          // relations between the vectors (ie that the point we need to find is at the opposite point of a kite) we can calculate
+          // the point just based on the two faces. We leave it to be updated in loop3 if we discover a third face that has a different
+          // normal to the first and the second.
+          //
+
+          const angleBetweenNormals = divide(angleBetween(containsVertex[element], containsVertex[el]), 2);
+
+          const c = sqrt(add(sqrt(height), square(multiply(height, tan(angleBetweenNormals)))));
+
+          const direction = unit(add(containsVertex[element], containsVertex[el]));
+
+          result = add(vertex, multiply(c, direction));
+
           loop3:
           // Iterate through the list of third elements to complete our combination
           for (const l in listOfThirdElements) {
@@ -145,16 +175,25 @@ pointsAboveCoplanar (height) {
       // If we have a point surrounded by parallel faces (so the loop has run through and hasn't updated result, so result will be '', which is false)
       // then we add the normal of the face times the height to the point
       if (!result) {
-        const point = add(vertex, multiply(height, unit(face.normal)));
+        point = add(vertex, multiply(height, unit(face.normal)));
       } 
+
+      // If we had the case where we have an edge and only two faces to calculate it from, then the point is just the result. We test this by checking the
+      // size of the first element in the array result - if it is the case where we only have two different normals the length of the first element will
+      // be a single number as it will be the x coordinate, if it has made it through to loop three and updated result with the three different normals
+      // it will be a vector of size 3, not just a number.
+      if (result[0].length == 1) {
+        point = result;
+      }
 
       // If we have 3 faces that contain the point and are not parallel
       else {
-        const point = threePlaneIntersection(result[0].plane.normal, result[0].plane.scalar, result[1].plane.normal, result[1].plane.scalar, result[2].plane.normal, result[2].plane.scalar);
+        point = threePlaneIntersection(result[0].plane.normal, result[0].plane.scalar, result[1].plane.normal, result[1].plane.scalar, result[2].plane.normal, result[2].plane.scalar);
       }
       
 
       }
 
   }
+  return point
 }
