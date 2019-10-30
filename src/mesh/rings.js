@@ -95,6 +95,37 @@ while (cloneFaces.length > 0) {
   }
 }
 
+const middle = (face) => {
+  return (divide(add(face[0], face[1], face[2]), 3));
+};
+
+// We need to ensure each ring starts from around the same place on the dome. We do this by
+// finding which face in the ring has the highest x value for the average of it's points.
+let max = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+
+// A function that moves an element in an array from one position in the array to another
+const arraymove = (arr, fromIndex, toIndex) => {
+  let element = arr[fromIndex];
+  arr.splice(fromIndex, 1);
+  arr.splice(toIndex, 0, element);
+}
+
+// Iterate through all the rings
+for (let r of listOfRings) {
+  // Iterate through each face of the rings
+  for (const i in r) {
+    // Checks if the face has a greater average x value than the previous max, and if so updates the max
+    if (middle(r[i])[0] > middle(max)[0]) {
+      max = r[i];
+    }
+    // If we have iterated through all of the ring, move the max value to the front of the ring
+    const y = parseInt(i, 10);
+    if (y == r.length - 1) {
+      r = arraymove(r, r.findIndex(max), 0);
+    }
+  }
+}
+
 // Define the centre as the centre of the dome
 const centre = [];
 
@@ -103,5 +134,5 @@ for (const r of listOfRings) {
   // Order the faces' centres around their neighbours, after the centre has been projected onto the ground.
   // We project them by averaging the x and z coordinates of the face, and then combining them in an array
   // with 0 for the y vector.
-  r.sort((a, b) => ((dot([0, 1, 0], cross(subtract([divide(add(a[0][0], a[1][0], a[2][0]), 3), 0, divide(add(a[0][2], a[1][2], a[2][2]), 3)], centre), subtract([divide(add(b[0][0], b[1][0], b[2][0]), 3), 0, divide(add(b[0][2], b[1][2], b[2][2]), 3)], centre))) > 0) ? 1 : -1));
+  r.sort((a, b) => ((dot([0, 1, 0], cross(subtract([middle(a)[0], 0, middle(a)[2]], centre), subtract(subtract([middle(b)[0], 0, middle(b)[2]], centre))) > 0) ? 1 : -1));
 }
