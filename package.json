@@ -1,7 +1,7 @@
 {
   "name": "@oneisland/mesh",
   "private": false,
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A simple library for creating and working with 3D meshes in Javascript",
   "keywords": [
     "mesh",

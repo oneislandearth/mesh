@@ -1,6 +1,6 @@
 // An updated algorithm that sorts the faces of the dome into vertical rings.
 
-import {dot, cross, divide, subtract, add} from 'Libraries/math';
+import {dot, cross, divide, subtract, add} from '@oneisland/math';
 
 // A function that checks if a given face has two elements in one list
 const faceContainsTwo = (test, two) => {
@@ -134,5 +134,5 @@ for (const r of listOfRings) {
   // Order the faces' centres around their neighbours, after the centre has been projected onto the ground.
   // We project them by averaging the x and z coordinates of the face, and then combining them in an array
   // with 0 for the y vector.
-  r.sort((a, b) => ((dot([0, 1, 0], cross(subtract([middle(a)[0], 0, middle(a)[2]], centre), subtract(subtract([middle(b)[0], 0, middle(b)[2]], centre))) > 0) ? 1 : -1));
+  r.sort((a, b) => ((dot([0, 1, 0], cross(subtract([middle(a)[0], 0, middle(a)[2]], centre), subtract(subtract([middle(b)[0], 0, middle(b)[2]], centre))) > 0) ? 1 : -1)));
 }

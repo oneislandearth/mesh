@@ -43,18 +43,28 @@ export class Mesh {
   // Compute the edges of the face
   get edges() {
 
-    // Define the list of edges
-    let edges = [];
+    // Define the object of edges
+    const edges = {};
 
     // Iterate through each of the faces
     for (const face of this.faces) {
 
-      // Add the values to the edges as a set (removing duplicates)
-      edges = [...new Set([...edges, ...face.edges])];
+      // Iterate through each of the faces
+      for (const edge of face.edges) {
+
+        // Order the edge by indice order
+        edge.sort((a, b) => a - b);
+
+        // Create a key from the edge
+        const key = `${edge[0]}|${edge[1]}`;
+
+        // Add the edge based on a key
+        edges[key] = edge;
+      }
     }
 
     // Return the list of edges
-    return edges;
+    return Object.values(edges);
   }
 
   // Calculate the center point of the mesh

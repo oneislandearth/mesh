@@ -46,6 +46,7 @@ test('Mesh: creation from triangular faces', (result) => {
 
   // Check the vertex, face and edge data is correct
   result.assert(mesh.vertices.length == 8);
+  result.assert(mesh.faces == 12);
   result.assert(mesh.faces.length == 12);
 
   // Check that the area and volume are correct

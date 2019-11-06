@@ -134,7 +134,7 @@ export class Plane {
     const [n3, s3] = [plane2.normal, plane2.scalar];
 
     // Calculate the determinant of the normals from the planes
-    const determinant = det(transpose([n1, n2, n3]));
+    const determinant = det([n1, n2, n3]);
 
     // Check if there no intersection and if so return false
     if (isZeroes(determinant)) return null;

@@ -3,9 +3,9 @@
 import {range} from 'range.js';
 
 // Takes in a face and outputs the points above it, whether the faces surrounding it are coplanar or not
-pointsAboveCoplanar (height) {
+const pointsAboveCoplanar = (height) => {
   // Iterate through each vertex in the face
-  for (let vertex of face) {
+  for (const vertex of face) {
 
     // Define the a variable that is the point that will be returned
     let point = [];
@@ -48,14 +48,13 @@ pointsAboveCoplanar (height) {
     const faceBefore = face.findAdjacentFaceFromEdgeIndex(indexOf(edgeBefore));
 
     // Checks if the three faces (face, faceNow, faceBefore) are parallel, if not computes the normals as per usual
-    if (((cross(faceNow.normal, faceBefore.normal) > epsilon) && ((cross(face.normal, faceBefore.normal) > epsilon) && ((cross(faceNow.normal, face.normal) > epsilon)) {
+    if (((cross(faceNow.normal, faceBefore.normal) > epsilon) && ((cross(face.normal, faceBefore.normal) > epsilon) && ((cross(faceNow.normal, face.normal) > epsilon))))) {
 
       // Runs three plane intersection on the three planes
       point = threePlaneIntersection(face.plane.normal, face.plane.scalar, faceBefore.plane.normal, faceBefore.plane.scalar, faceNow.plane.normal, faceNow.plane.scalar);
 
       // Add point to the updated face, unsure about how to structure this
     }
-
     
 
     // If any two of the three faces are parallel, we try to find three faces that contain the vertex that are not parellel. If this fails, we have a point surrounded by parallel faces,
@@ -63,10 +62,10 @@ pointsAboveCoplanar (height) {
     else {
 
       // A list of the faces that contain the vertex
-      let containsVertex = [];
+      const containsVertex = [];
 
       // Find all the faces that contain the vertex
-      for (let fac of faces) {
+      for (const fac of faces) {
 
         // Fac has to be different than the original face
         if (!fac.equals(face)) {
@@ -127,7 +126,9 @@ pointsAboveCoplanar (height) {
           
           // If element and el meet some condition, in this case that they are not parallel, 
           // move onto the next one in the loop for listofsecondelements
-          if (cross(containsVertex[element].normal, containsVertex[el].normal) < (epsilon, epsilon, epsilon)) {continue loop2}
+          if (cross(containsVertex[element].normal, containsVertex[el].normal) < (epsilon, epsilon, epsilon)) {
+            continue; 
+          }
 
           // We compute the point based on only having two different normals for all the faces that contain the point given.
           // This corresponds to having a vertex located on an edge, like the edge of a bench. All of the faces that contain
@@ -161,7 +162,10 @@ pointsAboveCoplanar (height) {
           for (const l in listOfThirdElements) {
 
             // If element and l or el and l meet some cElse make result equal the triplet and break out of the whole loopondition move onto the next one in the loop for listofthirdelements
-            if ((cross(containsVertex[element].normal, containsVertex[l].normal) < (epsilon, epsilon, epsilon)) || (cross(containsVertex[el].normal, containsVertex[l].normal) < (epsilon, epsilon, epsilon))) {continue loop3}
+            if ((cross(containsVertex[element].normal, containsVertex[l].normal) < (epsilon, epsilon, epsilon)) || (cross(containsVertex[el].normal, containsVertex[l].normal) < (epsilon, epsilon, epsilon))) { 
+              continue;
+
+ }
 
             // Else make result equal the triplet and break out of the whole loop
             else {
@@ -192,8 +196,9 @@ pointsAboveCoplanar (height) {
       }
       
 
-      }
+    }
 
   }
-  return point
-}
+  
+  return point;
+};
