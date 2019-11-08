@@ -259,7 +259,7 @@ export class Face extends Array {
   // // Updated face above method, deals with coplanar faces
 
   // // Takes in a face and outputs the points above it, whether the faces surrounding it are coplanar or not
-  // pointsAboveCoplanar(height) {
+  // pointsAbove(height) {
   //   // Define the array that will contain the points above the face
   //   const pointsAbove = [];
 
