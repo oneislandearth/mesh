@@ -405,7 +405,7 @@ export class Face extends Array {
     // Validate({ vertex, Vertex });
 
     // Find the vertex within the face
-    const match = this.vertices.filter(v => v.toString() == vertex.toString());
+    const match = this.vertices.find(v => v.toString() == JSON.stringify(vertex));
 
     // Return true if the vertex is in the face
     return Boolean(match);
