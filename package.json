@@ -12,8 +12,10 @@
   ],
   "main": "lib/index.js",
   "scripts": {
-    "build": "oneisland-babler lib",
-    "examples": "npm run build && node examples/cube.js && node examples/icosahedron.js",
+    "build": "tools/build.sh",
+    "examples": "tools/examples.sh",
+    "examples-build": "tools/build.sh; tools/examples.sh",
+    "setup": "tools/setup.sh",
     "test": "npm run build && ava",
     "prepublishOnly": "npm run build"
   },
@@ -22,7 +24,7 @@
     "@oneisland/validator": "^0.0.2"
   },
   "devDependencies": {
-    "@oneisland/babler": "^0.0.7",
+    "@oneisland/babler": "0.0.9",
     "@oneisland/linter": "^0.0.10",
     "ava": "^2.3.0",
     "source-map-support": "^0.5.13"
