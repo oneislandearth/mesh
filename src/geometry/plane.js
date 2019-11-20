@@ -136,6 +136,8 @@ export class Plane {
     // Calculate the determinant of the normals from the planes
     const determinant = det([n1, n2, n3]);
 
+    console.log(determinant);
+
     // Check if there no intersection and if so return false
     if (isZeroes(determinant)) return null;
 

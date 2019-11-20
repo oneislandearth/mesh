@@ -263,13 +263,17 @@ export class Face extends Array {
     // Define the array that will contain the points above the face
     const pointsAbove = [];
 
+    console.log('test');
+
+    console.log(this.vertices.length);
+
     // Iterate through each vertex in the face
     for (const vertex of this.vertices) {
 
-      console.log(this.vertices);
-
       // Define the a variable that is the point that will be returned
       let point = [];
+
+      console.log(vertex);
 
       // Find the index of the current vertex
       const index = this.vertices.indexOf(vertex);
