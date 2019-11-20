@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 // Import the required classes
 const { phi } = require('@oneisland/math');
 const { Mesh } = require('../lib');
