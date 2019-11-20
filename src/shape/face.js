@@ -263,11 +263,17 @@ export class Face extends Array {
     // Define the array that will contain the points above the face
     const pointsAbove = [];
 
+    console.log('test');
+
+    console.log(this.vertices.length);
+
     // Iterate through each vertex in the face
     for (const vertex of this.vertices) {
 
       // Define the a variable that is the point that will be returned
       let point = [];
+
+      console.log(vertex);
 
       // Find the index of the current vertex
       const index = vertex.index;
@@ -311,9 +317,9 @@ export class Face extends Array {
       if (((cross(faceNow.normal, faceBefore.normal) > epsilon) && ((cross(this.normal, faceBefore.normal) > epsilon) && ((cross(faceNow.normal, this.normal) > epsilon))))) {
 
         // Creates three new planes identical to the planes of the three faces, and scales them the distance desired
-        let newPlane1 = this.plane;
-        let newPlane2 = faceBefore.plane;
-        let newPlane3 = faceNow.plane;
+        const newPlane1 = this.plane;
+        const newPlane2 = faceBefore.plane;
+        const newPlane3 = faceNow.plane;
 
         newPlane1.scale(height);
         newPlane2.scale(height);
@@ -357,7 +363,8 @@ export class Face extends Array {
         // expensive and we want to avoid doing it.
 
         // An array of the indices of containsVertex (from 0 to containsVertex.length - 1)
-        const array = new Array(containsVertex.length).fill(0).map((v, i) => i);
+        const array = new Array(containsVertex.length).fill(0).
+map((v, i) => i);
 
         // Gives a list of the first elements of the combinations, and we have
         // length - 2 because slice excludes the element of the end index, since we
@@ -460,9 +467,9 @@ export class Face extends Array {
         else {
 
           // Creates three new planes identical to the planes of the three faces that we have found that are not parallel, and scales them by the distance desired
-          let resultPlane1 = result[0].plane;
-          let resultPlane2 = result[1].plane;
-          let resultPlane3 = result[2].plane;
+          const resultPlane1 = result[0].plane;
+          const resultPlane2 = result[1].plane;
+          const resultPlane3 = result[2].plane;
 
           resultPlane1.scale(height);
           resultPlane2.scale(height);
