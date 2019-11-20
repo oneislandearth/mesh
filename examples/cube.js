@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 // Import the required classes
 const { Mesh } = require('../lib');
 
