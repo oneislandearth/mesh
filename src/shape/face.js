@@ -363,8 +363,8 @@ export class Face extends Array {
         // expensive and we want to avoid doing it.
 
         // An array of the indices of containsVertex (from 0 to containsVertex.length - 1)
-        const array = new Array(containsVertex.length - 1).fill(0)
-.map((v, i) => i);
+        const array = new Array(containsVertex.length).fill(0).
+map((v, i) => i);
 
         // Gives a list of the first elements of the combinations, and we have
         // length - 2 because slice excludes the element of the end index, since we
