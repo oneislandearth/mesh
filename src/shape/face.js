@@ -2,7 +2,7 @@
 import { divide, add, subtract, norm, cross, dot, toMeters, epsilon, pi, acos, multiply, unit, tan, angleBetween } from '@oneisland/math';
 
 // Import the range function
-import {range} from 'utils/range_array.js';
+// import { range } from 'utils/range_array.js';
 
 // Import the required geometry modules
 import { Plane } from 'geometry/plane';
@@ -362,8 +362,8 @@ export class Face extends Array {
         // with each other, so we need to break the loop early if thats the case as we're done, as computing cross products is
         // expensive and we want to avoid doing it.
 
-        // An array of the indices of containsVertex
-        const array = range((containsVertex.length - 1));
+        // An array of the indices of containsVertex (from 0 to containsVertex.length - 1)
+        const array = new Array(containsVertex.length).fill(0).map((v, i) => i);
 
         // Gives a list of the first elements of the combinations, and we have
         // length - 2 because slice excludes the element of the end index, since we
