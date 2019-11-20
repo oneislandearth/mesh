@@ -266,13 +266,11 @@ export class Face extends Array {
     // Iterate through each vertex in the face
     for (const vertex of this.vertices) {
 
-      console.log(this.vertices);
-
       // Define the a variable that is the point that will be returned
       let point = [];
 
       // Find the index of the current vertex
-      const index = this.vertices.indexOf(vertex);
+      const index = vertex.index;
 
       // I took the code for edges without an adjacent face from the old pointsAboveFace method
 
