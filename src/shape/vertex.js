@@ -49,7 +49,7 @@ export class Vertex extends Point {
     if (!this.mesh) throw new Error(`Cannot compute the index - the vertex is not bound to a Mesh`);
 
     // Return the index of the vertex in the vertices
-    return Number(this.mesh.vertex.findIndex(vertex => vertex.equals(this)));
+    return Number(this.mesh.vertices.findIndex(vertex => vertex.equals(this)));
   }
 
   // Update the vertex normal
