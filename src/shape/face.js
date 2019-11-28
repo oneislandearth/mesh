@@ -263,20 +263,14 @@ export class Face extends Array {
     // Define the array that will contain the points above the face
     const pointsAbove = [];
 
-    console.log('test');
-
-    console.log(this.vertices.length);
-
     // Iterate through each vertex in the face
     for (const vertex of this.vertices) {
 
       // Define the a variable that is the point that will be returned
       let point = [];
 
-      console.log(vertex);
-
       // Find the index of the current vertex
-      const index = vertex.index;
+      const index = this.vertices.map(v => v.toString()).findIndex(v => v == vertex.toString());
 
       // I took the code for edges without an adjacent face from the old pointsAboveFace method
 
@@ -289,8 +283,11 @@ export class Face extends Array {
         // Define which vertex from the edge to use based on which adjacent face is missing (0, 1, 2 == 2, 1, 0)
         const vertexIndex = (missingAdjacentIndex == 0) ? 2 : (missingAdjacentIndex == 2) ? 0 : missingAdjacentIndex;
 
+        // Create a list of planes (face, faceAB, faceBC, faceCA)
+        const planes = [this.plane.clone(), ...this.adjacentFaces.map(face => ((face) ? face.plane.clone() : null))];
+
         // Creates a new plane that is parallel to the xz plane and contains one point of the edge
-        this.planes[1 + missingAdjacentIndex] = new Plane({
+        planes[1 + missingAdjacentIndex] = new Plane({
           
           // Calculate the normal
           normal: new Direction([0, 1, 0]), 
@@ -311,7 +308,13 @@ export class Face extends Array {
 
       const faceNow = this.findAdjacentFaceFromEdgeIndex(index);
 
+      console.log('thisface', this.vertices);
+
+      console.log('adjacentfaces', this.adjacentFaces);
+
       const faceBefore = this.findAdjacentFaceFromEdgeIndex(((index + (this.vertices.length - 1)) % this.vertices.length));
+
+      console.log('facebefore', faceBefore);
 
       // Checks if the three faces (face, faceNow, faceBefore) are not parallel, if that is the case compute the normals as per usual
       if (((cross(faceNow.normal, faceBefore.normal) > epsilon) && ((cross(this.normal, faceBefore.normal) > epsilon) && ((cross(faceNow.normal, this.normal) > epsilon))))) {
@@ -364,7 +367,7 @@ export class Face extends Array {
 
         // An array of the indices of containsVertex (from 0 to containsVertex.length - 1)
         const array = new Array(containsVertex.length).fill(0).
-map((v, i) => i);
+          map((v, i) => i);
 
         // Gives a list of the first elements of the combinations, and we have
         // length - 2 because slice excludes the element of the end index, since we
@@ -448,7 +451,6 @@ map((v, i) => i);
             }
           }
         }
-
         // If we have a point surrounded by parallel faces (so the loop has run through and hasn't updated result, so result will be '', which is false)
         // then we add the normal of the face times the height to the point, so we make the point above directly above it.
         if (!result) {
@@ -482,7 +484,7 @@ map((v, i) => i);
       }
       pointsAbove.push(point);
     }
-
+    
     return pointsAbove;
 
     
