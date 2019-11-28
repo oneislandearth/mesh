@@ -1,5 +1,5 @@
 // Import the required math functions
-import { divide, add, subtract, norm, cross, dot, toMeters, epsilon, pi, acos, multiply, unit, tan, angleBetween } from '@oneisland/math';
+import { divide, add, subtract, norm, cross, dot, toMeters, epsilon, pi, acos, multiply, unit, tan, angleBetween, isZeroes } from '@oneisland/math';
 
 // Import the range function
 // import { range } from 'utils/range_array.js';
@@ -165,7 +165,8 @@ export class Face extends Array {
       this.findAdjacentFaceFromEdgeIndex(1),
 
       // Find face at edge ca/ac
-      this.findAdjacentFaceFromEdgeIndex(2)];
+      this.findAdjacentFaceFromEdgeIndex(2)
+    ];
   }
 
   // Find an adjacent face from an edge index (0: ab, 1: bc, 2: ca)
@@ -260,81 +261,80 @@ export class Face extends Array {
 
   // Takes in a face and outputs the points above it, whether the faces surrounding it are coplanar or not
   pointsAbove(height) {
+
     // Define the array that will contain the points above the face
     const pointsAbove = [];
 
+    // Create a list of planes (faceAB, faceBC, faceCA)
+    const planes = this.adjacentFaces.map(face => ((face) ? face.plane.clone() : null));
+
+    // Find the index of the non-existing adjacent face if there is one
+    const missingAdjacentIndex = planes.findIndex(v => v === null);
+
+    // Check if there is a missing face
+    if (~missingAdjacentIndex) {
+
+      // Define which vertex from the edge to use based on which adjacent face is missing (0, 1, 2 == 2, 1, 0)
+      const vertexIndex = (missingAdjacentIndex == 0) ? 2 : (missingAdjacentIndex == 2) ? 0 : missingAdjacentIndex;
+
+      // Creates a new plane that is parallel to the xz plane and contains one point of the edge
+      planes[missingAdjacentIndex] = new Plane({
+        
+        // Calculate the normal
+        normal: new Direction([0, 1, 0]), 
+        
+        // Calculate the scalar based on the edge
+        scalar: dot([0, 1, 0], this.vertices[vertexIndex])
+      });
+    }
+
+    // Extract the current face plane
+    const facePlane = this.plane.clone();
+
     // Iterate through each vertex in the face
-    for (const vertex of this.vertices) {
+    for (const [index, vertex] of Object.entries(this.vertices)) {
 
       // Define the a variable that is the point that will be returned
       let point = [];
 
-      // Find the index of the current vertex
-      const index = this.vertices.map(v => v.toString()).findIndex(v => v == vertex.toString());
+      // Current adjacent face plane normal
+      const adjacentPlane = planes[index];
 
-      // I took the code for edges without an adjacent face from the old pointsAboveFace method
+      // Previous adjacent face plane
+      const previousAdjacentPlane = planes[(index + (this.vertices.length - 1)) % this.vertices.length];
 
-      // Find the index of the non-existing adjacent face if there is one
-      const missingAdjacentIndex = this.adjacentFaces.findIndex(v => v === null);
+      // Calculate the cross products
+      console.log(`\ncross(\n\tadjacent: ${adjacentPlane}, \n\tprevious: ${previousAdjacentPlane}\n)`); 
+      console.log(`${cross(adjacentPlane.normal, previousAdjacentPlane.normal)}`);
+      console.log(`\ncross(\n\tface: ${facePlane}, \n\tprevious: ${previousAdjacentPlane}\n)`); 
+      console.log(`${cross(facePlane.normal, previousAdjacentPlane.normal)}`);
+      console.log(`\ncross(\n\tadjacent: ${adjacentPlane}, \n\tface: ${facePlane}\n)`); 
+      console.log(`${cross(adjacentPlane.normal, facePlane.normal)}`);
 
-      // Check if there is a missing face
-      if (missingAdjacentIndex !== -1) {
+      // Checks if the three planes are not parallel, if that is the case compute the normals as per usual
+      if (
+        (!isZeroes(cross(adjacentPlane.normal, previousAdjacentPlane.normal))) && 
+        (!isZeroes(cross(facePlane.normal, previousAdjacentPlane.normal))) && 
+        (!isZeroes(cross(adjacentPlane.normal, facePlane.normal)))
+      ) {
 
-        // Define which vertex from the edge to use based on which adjacent face is missing (0, 1, 2 == 2, 1, 0)
-        const vertexIndex = (missingAdjacentIndex == 0) ? 2 : (missingAdjacentIndex == 2) ? 0 : missingAdjacentIndex;
+        // Log out the case
+        console.log('points above case one')
 
-        // Create a list of planes (face, faceAB, faceBC, faceCA)
-        const planes = [this.plane.clone(), ...this.adjacentFaces.map(face => ((face) ? face.plane.clone() : null))];
+        // Scale the three planes
+        facePlane.scale(height);
+        previousAdjacentPlane.scale(height);
+        adjacentPlane.scale(height);
 
-        // Creates a new plane that is parallel to the xz plane and contains one point of the edge
-        planes[1 + missingAdjacentIndex] = new Plane({
-          
-          // Calculate the normal
-          normal: new Direction([0, 1, 0]), 
-          
-          // Calculate the scalar based on the edge
-          scalar: dot([0, 1, 0], this.vertices[vertexIndex])
-        });
-      }
+        // Calculate the three plane intersection on the three planes
+        point = facePlane.pointOfIntersectionWithPlanes(previousAdjacentPlane, adjacentPlane);
 
-      // Finds one edge that contains the vertex 
-      const edgeNow = this.edges[index];
-
-      // Finds the other edge that contains the vertex (can be used for a polygon of any number of vertices, providing one edge of the polygon has at most one adjacent face)
-      // Finds the edge before the edge defined above
-      const edgeBefore = this.edges[((index + (this.vertices.length - 1)) % this.vertices.length)];
-
-      // Finds the faces that contain edgeNow and edgeBefore
-
-      const faceNow = this.findAdjacentFaceFromEdgeIndex(index);
-
-      console.log('thisface', this.vertices);
-
-      console.log('adjacentfaces', this.adjacentFaces);
-
-      const faceBefore = this.findAdjacentFaceFromEdgeIndex(((index + (this.vertices.length - 1)) % this.vertices.length));
-
-      console.log('facebefore', faceBefore);
-
-      // Checks if the three faces (face, faceNow, faceBefore) are not parallel, if that is the case compute the normals as per usual
-      if (((cross(faceNow.normal, faceBefore.normal) > epsilon) && ((cross(this.normal, faceBefore.normal) > epsilon) && ((cross(faceNow.normal, this.normal) > epsilon))))) {
-
-        // Creates three new planes identical to the planes of the three faces, and scales them the distance desired
-        const newPlane1 = this.plane;
-        const newPlane2 = faceBefore.plane;
-        const newPlane3 = faceNow.plane;
-
-        newPlane1.scale(height);
-        newPlane2.scale(height);
-        newPlane3.scale(height);
-
-        // Runs three plane intersection on the three planes
-        point = newPlane1.pointOfIntersectionWithPlanes(newPlane2, newPlane3);
-      }
-      
       // If any two of the three faces are parallel, we try to find three faces that contain the vertex that are not parellel. If this fails, we have a point surrounded by parallel faces,
       // so we return the point plus the height times the normal of the original face, so the point is directly above where it was by a distance of height.
-      else {
+      } else {
+
+        // Describe the method
+        console.log('points above case two')
 
         // A list of the faces that contain the vertex
         const containsVertex = [];
@@ -366,8 +366,7 @@ export class Face extends Array {
         // expensive and we want to avoid doing it.
 
         // An array of the indices of containsVertex (from 0 to containsVertex.length - 1)
-        const array = new Array(containsVertex.length).fill(0).
-          map((v, i) => i);
+        const array = new Array(containsVertex.length).fill(0). map((v, i) => i);
 
         // Gives a list of the first elements of the combinations, and we have
         // length - 2 because slice excludes the element of the end index, since we

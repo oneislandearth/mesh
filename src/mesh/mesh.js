@@ -22,7 +22,7 @@ export class Mesh {
 
     // Bind the faces to the mesh
     this.faces = new Faces(faces, this);
-
+    
     // Compute the correct face normals if winding is true
     if (winding) this.faces.computeNormals();
 
