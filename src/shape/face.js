@@ -165,8 +165,7 @@ export class Face extends Array {
       this.findAdjacentFaceFromEdgeIndex(1),
 
       // Find face at edge ca/ac
-      this.findAdjacentFaceFromEdgeIndex(2)
-    ];
+      this.findAdjacentFaceFromEdgeIndex(2)];
   }
 
   // Find an adjacent face from an edge index (0: ab, 1: bc, 2: ca)
@@ -266,7 +265,7 @@ export class Face extends Array {
     const pointsAbove = [];
 
     // Create a list of planes (faceAB, faceBC, faceCA)
-    const planes = this.adjacentFaces.map(face => ((face) ? face.plane.clone() : null));
+    const planes = this.adjacentFaces.map(face => ((face) ? face.plane : null));
 
     // Find the index of the non-existing adjacent face if there is one
     const missingAdjacentIndex = planes.findIndex(v => v === null);
@@ -287,29 +286,30 @@ export class Face extends Array {
         scalar: dot([0, 1, 0], this.vertices[vertexIndex])
       });
     }
-
-    // Extract the current face plane
-    const facePlane = this.plane.clone();
-
+    
     // Iterate through each vertex in the face
     for (const [index, vertex] of Object.entries(this.vertices)) {
 
       // Define the a variable that is the point that will be returned
       let point = [];
 
+      // Extract the current face plane
+      const facePlane = this.plane.clone();
+
       // Current adjacent face plane normal
-      const adjacentPlane = planes[index];
+      const adjacentPlane = planes[index].clone();
 
       // Previous adjacent face plane
-      const previousAdjacentPlane = planes[(index + (this.vertices.length - 1)) % this.vertices.length];
+      const previousAdjacentPlane = planes[(index + (this.vertices.length - 1)) % this.vertices.length].clone();
 
       // Calculate the cross products
-      console.log(`\ncross(\n\tadjacent: ${adjacentPlane}, \n\tprevious: ${previousAdjacentPlane}\n)`); 
-      console.log(`${cross(adjacentPlane.normal, previousAdjacentPlane.normal)}`);
-      console.log(`\ncross(\n\tface: ${facePlane}, \n\tprevious: ${previousAdjacentPlane}\n)`); 
-      console.log(`${cross(facePlane.normal, previousAdjacentPlane.normal)}`);
-      console.log(`\ncross(\n\tadjacent: ${adjacentPlane}, \n\tface: ${facePlane}\n)`); 
-      console.log(`${cross(adjacentPlane.normal, facePlane.normal)}`);
+      // console.log(`\ncross(\n\tadjacent: ${adjacentPlane}, \n\tprevious: ${previousAdjacentPlane}\n)`); 
+      // console.log(`${cross(adjacentPlane.normal, previousAdjacentPlane.normal)}`);
+      // console.log(`\ncross(\n\tface: ${facePlane}, \n\tprevious: ${previousAdjacentPlane}\n)`); 
+      // console.log(`${cross(facePlane.normal, previousAdjacentPlane.normal)}`);
+      // console.log(`\ncross(\n\tadjacent: ${adjacentPlane}, \n\tface: ${facePlane}\n)`); 
+      // console.log(`${cross(adjacentPlane.normal, facePlane.normal)}`);
+      // console.log('count')
 
       // Checks if the three planes are not parallel, if that is the case compute the normals as per usual
       if (
@@ -319,7 +319,7 @@ export class Face extends Array {
       ) {
 
         // Log out the case
-        console.log('points above case one')
+        // console.log('points above case one');
 
         // Scale the three planes
         facePlane.scale(height);
@@ -327,14 +327,14 @@ export class Face extends Array {
         adjacentPlane.scale(height);
 
         // Calculate the three plane intersection on the three planes
-        point = facePlane.pointOfIntersectionWithPlanes(previousAdjacentPlane, adjacentPlane);
+        point = facePlane.pointOfIntersectionWithPlanes(adjacentPlane, previousAdjacentPlane);
 
       // If any two of the three faces are parallel, we try to find three faces that contain the vertex that are not parellel. If this fails, we have a point surrounded by parallel faces,
       // so we return the point plus the height times the normal of the original face, so the point is directly above where it was by a distance of height.
       } else {
 
         // Describe the method
-        console.log('points above case two')
+        // console.log('points above case two');
 
         // A list of the faces that contain the vertex
         const containsVertex = [];
@@ -366,7 +366,8 @@ export class Face extends Array {
         // expensive and we want to avoid doing it.
 
         // An array of the indices of containsVertex (from 0 to containsVertex.length - 1)
-        const array = new Array(containsVertex.length).fill(0). map((v, i) => i);
+        const array = new Array(containsVertex.length).fill(0).
+          map((v, i) => i);
 
         // Gives a list of the first elements of the combinations, and we have
         // length - 2 because slice excludes the element of the end index, since we
@@ -381,6 +382,8 @@ export class Face extends Array {
         const listOfFirstElements = array.slice(0, (array.length - 2));
 
         let result = '';
+
+        // Console.log(listOfFirstElements);
 
         // Use each element of listoffirst elements as the first element of the combination
         loop1:
@@ -401,7 +404,7 @@ export class Face extends Array {
             
             // If element and el meet some condition, in this case that they are not parallel, 
             // move onto the next one in the loop for listofsecondelements
-            if (cross(containsVertex[element].normal, containsVertex[el].normal) < (epsilon, epsilon, epsilon)) {
+            if (norm(cross(containsVertex[element].normal, containsVertex[el].normal)) < epsilon) {
               continue; 
             }
 
@@ -437,7 +440,7 @@ export class Face extends Array {
             for (const l of listOfThirdElements) {
 
               // If element and l or el and l meet some condition move onto the next one in the loop for listofthirdelements, else make result equal the triplet and break out of the whole loop
-              if ((cross(containsVertex[element].normal, containsVertex[l].normal) < (epsilon, epsilon, epsilon)) || (cross(containsVertex[el].normal, containsVertex[l].normal) < (epsilon, epsilon, epsilon))) { 
+              if ((norm(cross(containsVertex[element].normal, containsVertex[l].normal)) < epsilon) || (norm(cross(containsVertex[el].normal, containsVertex[l].normal)) < epsilon)) { 
                 continue;
 
               }
@@ -482,7 +485,10 @@ export class Face extends Array {
 
       }
       pointsAbove.push(point);
+
     }
+
+    // Console.log('face', pointsAbove);
     
     return pointsAbove;
 
