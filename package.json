@@ -27,7 +27,7 @@
     "@oneisland/babler": "0.0.9",
     "@oneisland/linter": "^0.0.10",
     "ava": "^2.3.0",
-    "source-map-support": "^0.5.13"
+    "source-map-support": "^0.5.19"
   },
   "homepage": "https://github.com/oneislandearth/mesh#readme",
   "repository": {
